@@ -1,12 +1,14 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from tkinter import ttk, Toplevel
-from tkcalendar import DateEntry  # Asegúrate de tener instalado tkcalendar
+from tkcalendar import DateEntry
+from Views.Home.home_view import HomeView
 
-class ClienteView:
-    def __init__(self, root, cliente_model):
+class ClientesView:
+    def __init__(self, root, cliente_model, volver_menu_callback):
         self.root = root
         self.cliente_model = cliente_model
+        self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
 
         self.root.geometry("900x600")
         self.root.title("Gestión de Clientes")
@@ -20,6 +22,10 @@ class ClienteView:
         title = ctk.CTkLabel(self.main_frame, text="Gestión de Clientes", font=('Arial', 24), text_color='white')
         title.grid(row=0, column=0, columnspan=4, padx=20, pady=20)
 
+        # Botón "Volver"
+        back_button = ctk.CTkButton(self.main_frame, text="Volver", command=self.volver_menu, fg_color='#3b3b3b', font=('Arial', 18))
+        back_button.grid(row=0, column=0, padx=20, pady=20, sticky='ne')
+        
         # Campo de búsqueda
         self.search_var = ctk.StringVar()
         search_entry = ctk.CTkEntry(self.main_frame, textvariable=self.search_var, placeholder_text="Buscar cliente")
@@ -59,6 +65,15 @@ class ClienteView:
         # Cargar los clientes al inicio
         self.load_clients()
 
+    def volver_menu(self):
+        # Cierra la ventana actual
+        self.root.destroy()  
+        # Crea una nueva instancia de la ventana principal
+        main_window = ctk.CTk()  
+        # Instancia del menú principal
+        menu = HomeView(main_window, self.cliente_model)  # Asegúrate de pasar el cliente_model
+        main_window.mainloop()  # Comienza el ciclo principal
+        
     def load_clients(self):
         self.tree.delete(*self.tree.get_children())  # Limpiar la tabla
         clientes = self.cliente_model.obtener_clientes()  # Asegúrate de que este método retorna clientes ordenados
@@ -170,4 +185,3 @@ class ClienteView:
         for cliente in clientes:
             if search_term in cliente[1].lower() or search_term in cliente[2].lower():
                 self.tree.insert('', 'end', values=cliente)
-

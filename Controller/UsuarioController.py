@@ -1,4 +1,4 @@
-from View.UsuarioView import UsuarioView  # Asegúrate de que la ruta sea correcta
+from Views.UsuarioView import UsuarioView  # Asegúrate de que la ruta sea correcta
 from Model.UsuarioModel import UsuarioModel  # Asegúrate de que la ruta sea correcta
 
 class UsuarioController:
