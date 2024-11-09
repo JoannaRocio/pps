@@ -86,7 +86,7 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de clientes
-        self.clientes_view = VencimientosView(self.root, self.cliente_model, self.volver_menu)
+        self.clientes_view = VencimientosView(self.root, self.cliente_model, self.compania_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
         self.clientes_view.main_frame.pack(fill="both", expand=True)
@@ -98,7 +98,7 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de clientes
-        self.clientes_view = SiniestrosView(self.root, self.cliente_model, self.volver_menu)
+        self.clientes_view = SiniestrosView(self.root, self.cliente_model, self.compania_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
         self.clientes_view.main_frame.pack(fill="both", expand=True)
@@ -110,6 +110,12 @@ class HomeView:
         if self.companias_view:  # Verifica si clientes_view existe
             self.companias_view.main_frame.pack_forget()  # Oculta la vista de clientes
             self.companias_view = None  # Limpia la referencia a ClientesView
+        if self.siniestros_view:  # Verifica si clientes_view existe
+            self.siniestros_view.main_frame.pack_forget()  # Oculta la vista de clientes
+            self.siniestros_view = None  # Limpia la referencia a ClientesView
+        if self.vencimientos_view:  # Verifica si clientes_view existe
+            self.vencimientos_view.main_frame.pack_forget()  # Oculta la vista de clientes
+            self.vencimientos_view = None  # Limpia la referencia a ClientesView
         # Muestra el marco principal de HomeView
         self.main_frame.pack(fill="both", expand=True)
         
