@@ -5,9 +5,10 @@ from tkcalendar import DateEntry  # Asegúrate de tener instalado tkcalendar
 # from Views.Clientes.clientes_view import ClientesView
 
 class HomeView:
-    def __init__(self, root, cliente_model):
+    def __init__(self, root, cliente_model,compania_model):
         self.root = root
         self.cliente_model = cliente_model
+        self.compania_model = compania_model
         # self.main_frame = ctk.CTkFrame(self.root)
         # self.main_frame.pack(fill="both", expand=True)
 
@@ -61,7 +62,7 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de clientes
-        self.clientes_view = ClientesView(self.root, self.cliente_model, self.volver_menu)
+        self.clientes_view = ClientesView(self.root, self.cliente_model, self.compania_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
         self.clientes_view.main_frame.pack(fill="both", expand=True)
@@ -72,11 +73,11 @@ class HomeView:
         # Oculta el marco principal
         self.main_frame.pack_forget()
         
-        # Crea la vista de clientes
-        self.clientes_view = CompaniasView(self.root, self.cliente_model, self.volver_menu)
+        # Crea la vista de companias
+        self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.volver_menu)
         
-        # Muestra el marco de ClientesView
-        self.clientes_view.main_frame.pack(fill="both", expand=True)
+        # Muestra el marco de CompaniasView
+        self.companias_view.main_frame.pack(fill="both", expand=True)
         
     def mostrar_vencimientos_view(self): 
         from Views.Vencimientos.vencimientos_view import VencimientosView
@@ -106,7 +107,9 @@ class HomeView:
         if self.clientes_view:  # Verifica si clientes_view existe
             self.clientes_view.main_frame.pack_forget()  # Oculta la vista de clientes
             self.clientes_view = None  # Limpia la referencia a ClientesView
-        
+        if self.companias_view:  # Verifica si clientes_view existe
+            self.companias_view.main_frame.pack_forget()  # Oculta la vista de clientes
+            self.companias_view = None  # Limpia la referencia a ClientesView
         # Muestra el marco principal de HomeView
         self.main_frame.pack(fill="both", expand=True)
         

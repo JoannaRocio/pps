@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
+from Model.CompaniaModel import CompaniaModel
 from Model.ClienteModel import ClienteModel
 from Model.UsuarioModel import UsuarioModel
 from db.db_connection import DatabaseConnection
@@ -33,7 +34,8 @@ def on_login_success():
 
     # Crear una instancia del modelo y de la vista principal
     cliente_model = ClienteModel(db_connection)
-    app = HomeView(root, cliente_model)
+    compania_model = CompaniaModel(db_connection)
+    app = HomeView(root, cliente_model, compania_model)
 
     # Iniciar el bucle principal de la interfaz gráfica
     root.mainloop()
