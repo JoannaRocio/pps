@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import webbrowser
 from tkinter import messagebox
 from tkinter import ttk, Toplevel
 from tkcalendar import DateEntry
@@ -43,6 +44,9 @@ class CompaniasView:
         self.tree.heading('Sitio_web', text='Sitio web')
         self.tree.grid(row=2, column=0, columnspan=4, padx=20, pady=10, sticky='nsew')
 
+        # Configura el evento de doble clic después de definir `self.tree`
+        self.tree.bind("<Double-1>", self.open_website_link)  # Evento de doble clic en la tabla
+
         # Botones de funcionalidad
         btn_add = ctk.CTkButton(self.main_frame, text="Agregar", command=self.open_add_company_window, fg_color='#3b3b3b', font=('Arial', 18))
         btn_add.grid(row=3, column=0, padx=20, pady=10)
@@ -68,9 +72,17 @@ class CompaniasView:
     def obtener_companias(self):
         """Carga las compañías en la tabla"""
         self.tree.delete(*self.tree.get_children())
+        
+        # Configuración de tags de color en el Treeview
+        self.tree.tag_configure('disabled', background='red')
+        self.tree.tag_configure('enabled', background='white')
+
         companias = self.compania_model.obtener_companias()
         for compania in companias:
-            self.tree.insert('', 'end', values=compania)
+            # Verificar el estado y asignar el tag correspondiente
+            estado = 'disabled' if compania[3] == 'inactivo' else 'enabled'  # compania[3] es el campo `estado`
+            self.tree.insert('', 'end', values=compania[:3], tags=(estado,))
+
 
     def volver_menu(self):
         """Vuelve al menú principal"""
@@ -159,3 +171,14 @@ class CompaniasView:
             if search_term in compania[1].lower() or search_term in compania[2].lower():
                 self.tree.insert('', 'end', values=compania)
     
+    def open_website_link(self, event):
+        """Abre el sitio web de la compañía seleccionada en el navegador"""
+        selected_item = self.tree.selection()
+        if selected_item:
+            sitio_web = self.tree.item(selected_item, 'values')[2]  # Obtiene la URL de la columna 'Sitio_web'
+            
+            # Verifica si el campo de sitio_web no está vacío
+            if sitio_web:
+                webbrowser.open(sitio_web)  # Abre la URL en el navegador
+            else:
+                messagebox.showinfo("Información", "Esta compañía no tiene un sitio web registrado.")

@@ -4,7 +4,7 @@ class CompaniaModel:
 
     def obtener_companias(self):
         try:
-            query = "SELECT id_compania, nombre, sitio_web FROM companias"
+            query = "SELECT id_compania, nombre, sitio_web, estado FROM companias"
             return self.db_connection.fetch_data(query)
         except Exception as e:
             print(f"Error al obtener compañías: {str(e)}")
