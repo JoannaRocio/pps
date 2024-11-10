@@ -18,7 +18,7 @@ class UsuarioView:
 
         login_button = ctk.CTkButton(self.root, text="Iniciar Sesión", command=self.login)
         login_button.pack(pady=20)
-
+        prueba
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
