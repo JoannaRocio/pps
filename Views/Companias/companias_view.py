@@ -44,14 +44,18 @@ class CompaniasView:
         self.tree.grid(row=2, column=0, columnspan=4, padx=20, pady=10, sticky='nsew')
 
         # Botones de funcionalidad
-        btn_add = ctk.CTkButton(self.main_frame, text="Agregar Compañía", command=self.open_add_company_window, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_add = ctk.CTkButton(self.main_frame, text="Agregar", command=self.open_add_company_window, fg_color='#3b3b3b', font=('Arial', 18))
         btn_add.grid(row=3, column=0, padx=20, pady=10)
 
-        btn_edit = ctk.CTkButton(self.main_frame, text="Editar Compañía", command=self.open_edit_company_window, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_edit = ctk.CTkButton(self.main_frame, text="Editar", command=self.open_edit_company_window, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=1, padx=20, pady=10)
 
-        btn_delete = ctk.CTkButton(self.main_frame, text="Eliminar Compañía", command=self.delete_company, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_delete = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.disable_company, fg_color='#3b3b3b', font=('Arial', 18))
         btn_delete.grid(row=3, column=2, padx=20, pady=10)
+
+        btn_enable = ctk.CTkButton(self.main_frame, text="Habilitar", command=self.enable_company, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_enable.grid(row=3, column=3, padx=20, pady=10)
+
 
         # Configuración del estiramiento de las columnas
         self.main_frame.grid_rowconfigure(2, weight=1)
@@ -62,22 +66,25 @@ class CompaniasView:
         self.obtener_companias()
 
     def obtener_companias(self):
+        """Carga las compañías en la tabla"""
         self.tree.delete(*self.tree.get_children())
         companias = self.compania_model.obtener_companias()
-        print(companias)
         for compania in companias:
             self.tree.insert('', 'end', values=compania)
 
     def volver_menu(self):
+        """Vuelve al menú principal"""
         self.root.destroy()
         main_window = ctk.CTk()
         menu = HomeView(main_window, self.compania_model, self.cliente_model)
         main_window.mainloop()
 
     def open_add_company_window(self):
+        """Abre la ventana para agregar una nueva compañía"""
         self.company_form_window("Agregar Compañía", None)
 
     def open_edit_company_window(self):
+        """Abre la ventana para editar una compañía seleccionada"""
         selected_item = self.tree.selection()
         if selected_item:
             company_id = self.tree.item(selected_item, 'values')[0]
@@ -86,6 +93,7 @@ class CompaniasView:
             messagebox.showwarning("Advertencia", "Seleccione una compañía para editar.")
 
     def company_form_window(self, title, company_id):
+        """Crea la ventana para agregar o editar una compañía"""
         form_window = Toplevel(self.root)
         form_window.title(title)
         form_window.config(bg='#2b2b2b')
@@ -109,27 +117,45 @@ class CompaniasView:
         save_button.grid(row=2, column=0, columnspan=2, padx=10, pady=20)
 
     def save_company(self, company_id, name, website):
+        """Guarda la compañía en la base de datos (agregar o editar)"""
         if company_id:
             self.compania_model.editar_compania(company_id, name, website)
         else:
             self.compania_model.agregar_compania(name, website)
-        self.load_companies()
+        self.obtener_companias()
         messagebox.showinfo("Éxito", "Compañía guardada correctamente.")
+    
 
-    def delete_company(self):
+    def enable_company(self):
+        """Habilita una compañía seleccionada"""
         selected_item = self.tree.selection()
         if selected_item:
             company_id = self.tree.item(selected_item, 'values')[0]
-            self.compania_model.eliminar_compania(company_id)
-            self.load_companies()
-            messagebox.showinfo("Éxito", "Compañía eliminada correctamente.")
+            self.compania_model.habilitar_compania(company_id)
+            self.obtener_companias()
+            messagebox.showinfo("Éxito", "Compañía habilitada correctamente.")
         else:
-            messagebox.showwarning("Advertencia", "Seleccione una compañía para eliminar.")
+            messagebox.showwarning("Advertencia", "Seleccione una compañía para habilitar.")
+
+
+    def disable_company(self):
+        """Deshabilita una compañía seleccionada"""
+        selected_item = self.tree.selection()
+        if selected_item:
+            company_id = self.tree.item(selected_item, 'values')[0]
+            self.compania_model.deshabilitar_compania(company_id)
+            self.obtener_companias()
+            messagebox.showinfo("Éxito", "Compañía deshabilitada correctamente.")
+        else:
+            messagebox.showwarning("Advertencia", "Seleccione una compañía para deshabilitar.")
+
 
     def search_companies(self):
+        """Filtra las compañías según el término de búsqueda"""
         search_term = self.search_var.get().lower()
         self.tree.delete(*self.tree.get_children())
         companias = self.compania_model.obtener_companias()
         for compania in companias:
             if search_term in compania[1].lower() or search_term in compania[2].lower():
                 self.tree.insert('', 'end', values=compania)
+    
