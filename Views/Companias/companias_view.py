@@ -6,10 +6,11 @@ from tkcalendar import DateEntry
 from Views.Home.home_view import HomeView
 
 class CompaniasView:
-    def __init__(self, root, cliente_model, compania_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, vencimiento_model, volver_menu_callback):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
+        self.vencimiento_model = vencimiento_model
         self.volver_menu_callback = volver_menu_callback
 
         self.root.geometry("900x600")
@@ -88,7 +89,7 @@ class CompaniasView:
         """Vuelve al menú principal"""
         self.root.destroy()
         main_window = ctk.CTk()
-        menu = HomeView(main_window, self.compania_model, self.cliente_model)
+        menu = HomeView(main_window, self.compania_model, self.cliente_model, self.vencimiento_model)
         main_window.mainloop()
 
     def open_add_company_window(self):

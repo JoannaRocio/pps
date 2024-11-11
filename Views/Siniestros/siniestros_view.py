@@ -5,10 +5,11 @@ from tkcalendar import DateEntry
 from Views.Home.home_view import HomeView
 
 class SiniestrosView:
-    def __init__(self, root, cliente_model, compania_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, vencimiento_model, volver_menu_callback):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
+        self.vencimiento_model = vencimiento_model
         self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
 
         self.root.geometry("900x600")
@@ -39,5 +40,5 @@ class SiniestrosView:
         # Crea una nueva instancia de la ventana principal
         main_window = ctk.CTk()  
         # Instancia del menú principal
-        menu = HomeView(main_window, self.cliente_model, self.compania_model)  # Asegúrate de pasar el cliente_model
+        menu = HomeView(main_window, self.cliente_model, self.compania_model, self.vencimiento_model)  # Asegúrate de pasar el cliente_model
         main_window.mainloop()  # Comienza el ciclo principal
