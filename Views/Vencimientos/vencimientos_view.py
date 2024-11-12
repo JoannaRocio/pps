@@ -15,7 +15,7 @@ class VencimientosView:
 
         # Configuración de la ventana
         self.root.geometry("900x600")
-        self.root.title("Gestión de Vencimientos")
+        self.root.title("Próximos Vencimientos")
         self.root.config(bg='#2b2b2b')
 
         # Frame principal
@@ -23,7 +23,7 @@ class VencimientosView:
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Título
-        title = ctk.CTkLabel(self.main_frame, text="Próximos Vencimientos", font=('Arial', 24), text_color='white')
+        title = ctk.CTkLabel(self.main_frame, text="Vencimientos", font=('Arial', 24), text_color='white')
         title.grid(row=0, column=0, columnspan=4, padx=20, pady=20)
 
         # Botón "Volver"
@@ -39,14 +39,14 @@ class VencimientosView:
         search_button.grid(row=1, column=3, padx=20, pady=10)
         
         # Creamos la tabla de vencimientos (Treeview)
-        self.treeview = ttk.Treeview(self.main_frame, columns=("Nombre", "Apellido", "Patente", "Fecha de Póliza", "Fecha de Licencia"), show="headings")
+        self.treeview = ttk.Treeview(self.main_frame, columns=("Nombre", "Apellido", "Patente", "Fecha de Licencia", "Fecha de Póliza"), show="headings")
         
         # Configuramos las columnas
         self.treeview.heading("Nombre", text="Nombre")
         self.treeview.heading("Apellido", text="Apellido")
         self.treeview.heading("Patente", text="Patente")
-        self.treeview.heading("Fecha de Póliza", text="Fecha de Póliza")
         self.treeview.heading("Fecha de Licencia", text="Fecha de Licencia")
+        self.treeview.heading("Fecha de Póliza", text="Fecha de Póliza")
         
         self.treeview.grid(row=2, column=0, columnspan=5, padx=20, pady=20, sticky="nsew")
 
