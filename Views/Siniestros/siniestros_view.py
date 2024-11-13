@@ -35,10 +35,8 @@ class SiniestrosView:
             self.main_frame.grid_columnconfigure(i, weight=1)
 
     def volver_menu(self):
-        # Cierra la ventana actual
-        self.root.destroy()  
-        # Crea una nueva instancia de la ventana principal
-        main_window = ctk.CTk()  
-        # Instancia del menú principal
-        menu = HomeView(main_window, self.cliente_model, self.compania_model, self.vencimiento_model)  # Asegúrate de pasar el cliente_model
-        main_window.mainloop()  # Comienza el ciclo principal
+        self.main_frame.pack_forget()  # Oculta el marco actual
+        self.main_frame = None  # Limpia la referencia al marco actual
+
+        # Crea y muestra la vista del HomeView en la misma ventana
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model)

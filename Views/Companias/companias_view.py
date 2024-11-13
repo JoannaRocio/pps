@@ -86,11 +86,11 @@ class CompaniasView:
 
 
     def volver_menu(self):
-        """Vuelve al menú principal"""
-        self.root.destroy()
-        main_window = ctk.CTk()
-        menu = HomeView(main_window, self.compania_model, self.cliente_model, self.vencimiento_model)
-        main_window.mainloop()
+        self.main_frame.pack_forget()  # Oculta el marco actual
+        self.main_frame = None  # Limpia la referencia al marco actual
+
+        # Crea y muestra la vista del HomeView en la misma ventana
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model)
 
     def open_add_company_window(self):
         """Abre la ventana para agregar una nueva compañía"""
