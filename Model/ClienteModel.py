@@ -4,7 +4,7 @@ class ClienteModel:
 
     def obtener_clientes(self):
         try:
-            query = "SELECT id_cliente, nombre, apellido, telefono, dni FROM clientes"
+            query = "SELECT id, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia FROM clientes"
             return self.db_connection.fetch_data(query)
         except Exception as e:
             print(f"Error al obtener clientes: {str(e)}")
@@ -51,7 +51,7 @@ class ClienteModel:
 
     def buscar_clientes(self, search_query):
         try:
-            query = "SELECT id_cliente, nombre, apellido, telefono, dni FROM clientes WHERE nombre LIKE %s OR apellido LIKE %s"
+            query = "SELECT id, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia FROM clientes WHERE nombre LIKE %s OR apellido LIKE %s"
             params = (f'%{search_query}%', f'%{search_query}%')
             return self.db_connection.fetch_data(query, params)
         except Exception as e:

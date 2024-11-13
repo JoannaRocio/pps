@@ -64,27 +64,13 @@ class VencimientosView:
             self.treeview.insert('', 'end', values=cliente)
 
     def buscarCliente(self):
-        """
-        Función de búsqueda. Filtra los clientes según el texto ingresado en el campo de búsqueda.
-        """
         search_term = self.search_var.get().lower()  # Obtener término de búsqueda en minúsculas
-
-        # Limpiar la tabla
-        for item in self.treeview.get_children():
-            self.treeview.delete(item)
-
-        # Ejemplo de búsqueda (esto se puede hacer más dinámico según tu base de datos)
-        vencimientos_data = [
-            ("Juan", "Pérez", "NULL", "NULL"),
-            ("María", "González", "NULL", "NULL"),
-            ("Carlos", "Rodríguez", "NULL", "NULL"),
-            ("Laura", "Martínez", "NULL", "NULL"),
-        ]
-
-        # Filtrar y volver a insertar solo los que coinciden con la búsqueda
-        for data in vencimientos_data:
-            if any(search_term in str(field).lower() for field in data):
-                self.treeview.insert("", "end", values=data)
+        self.treeview.delete(*self.treeview.get_children())
+        clientes = self.vencimiento_model.mostrar_vencimientos()
+        for cliente in clientes:
+            if search_term in cliente[0].lower() or search_term in cliente[1].lower() or search_term in cliente[2].lower() :
+                
+                self.treeview.insert('', 'end', values=cliente)
 
     def volver_menu(self):
         # Cierra la ventana actual

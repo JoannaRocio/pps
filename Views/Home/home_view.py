@@ -90,7 +90,7 @@ class HomeView:
         self.vencimientos_view = VencimientosView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
-        self.clientes_view.main_frame.pack(fill="both", expand=True)
+        self.vencimientos_view.main_frame.pack(fill="both", expand=True)
         
     def mostrar_siniestros_view(self): 
         from Views.Siniestros.siniestros_view import SiniestrosView
