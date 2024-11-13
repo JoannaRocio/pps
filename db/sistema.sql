@@ -1,6 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `gestion_seguro` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `gestion_seguro`;
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: gestion_seguro
 -- ------------------------------------------------------
@@ -18,35 +16,6 @@ USE `gestion_seguro`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `archivos`
---
-
-DROP TABLE IF EXISTS `archivos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `archivos` (
-  `id_archivo` int NOT NULL AUTO_INCREMENT,
-  `id_cliente` int DEFAULT NULL,
-  `ruta_archivo` varchar(255) NOT NULL,
-  `nombre_archivo` varchar(100) DEFAULT NULL,
-  `tipo_imagen` enum('delantera','trasera','costado') NOT NULL,
-  `fecha_subida` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_archivo`),
-  KEY `id_cliente` (`id_cliente`),
-  CONSTRAINT `archivos_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `archivos`
---
-
-LOCK TABLES `archivos` WRITE;
-/*!40000 ALTER TABLE `archivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `archivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `clientes`
 --
 
@@ -54,19 +23,21 @@ DROP TABLE IF EXISTS `clientes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clientes` (
-  `id_cliente` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) NOT NULL,
-  `dni` varchar(20) NOT NULL,
-  `direccion` varchar(255) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `fecha_nacimiento` date DEFAULT NULL,
-  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_cliente`),
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `apellido` varchar(255) NOT NULL,
+  `dni` varchar(50) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `telefono` varchar(50) DEFAULT NULL,
+  `cp` varchar(10) DEFAULT NULL,
+  `domicilio` varchar(255) DEFAULT NULL,
+  `vencimiento_licencia` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `dni` (`dni`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `idx_cliente_dni` (`dni`),
+  KEY `idx_cliente_email` (`email`),
+  KEY `idx_cliente_telefono` (`telefono`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,124 +46,64 @@ CREATE TABLE `clientes` (
 
 LOCK TABLES `clientes` WRITE;
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
-INSERT INTO `clientes` VALUES (7,'ezequiels','santillan','calle ','2314412','324415','eze@gmail.com','2021-09-15','2024-09-24 00:43:27');
+INSERT INTO `clientes` VALUES (1,'rodrigo','lazaro','19027899','lazaro@hotmail.com','1138315879','1832','pasaje 4099',NULL),(2,'nahuel','martinez','99999999','nahuel@hotmial.com','1125251125','8400','santiago 5050','2024-11-12');
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `cotizaciones`
+-- Table structure for table `companias`
 --
 
-DROP TABLE IF EXISTS `cotizaciones`;
+DROP TABLE IF EXISTS `companias`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cotizaciones` (
-  `id_cotizacion` int NOT NULL AUTO_INCREMENT,
-  `id_cliente` int DEFAULT NULL,
-  `tipo_cotizacion` varchar(50) NOT NULL,
-  `fecha_cotizacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `monto_estimado` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id_cotizacion`),
-  KEY `id_cliente` (`id_cliente`),
-  CONSTRAINT `cotizaciones_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `companias` (
+  `id_compania` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `sitio_web` varchar(255) NOT NULL,
+  `estado` enum('activo','inactivo') DEFAULT 'activo',
+  PRIMARY KEY (`id_compania`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cotizaciones`
+-- Dumping data for table `companias`
 --
 
-LOCK TABLES `cotizaciones` WRITE;
-/*!40000 ALTER TABLE `cotizaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cotizaciones` ENABLE KEYS */;
+LOCK TABLES `companias` WRITE;
+/*!40000 ALTER TABLE `companias` DISABLE KEYS */;
+INSERT INTO `companias` VALUES (1,'parana','https://www.paranaseguros.com.ar/','activo');
+/*!40000 ALTER TABLE `companias` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `logs`
+-- Table structure for table `siniestros`
 --
 
-DROP TABLE IF EXISTS `logs`;
+DROP TABLE IF EXISTS `siniestros`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `logs` (
-  `id_log` int NOT NULL AUTO_INCREMENT,
-  `id_usuario` int DEFAULT NULL,
-  `accion` varchar(255) NOT NULL,
-  `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_log`),
-  KEY `id_usuario` (`id_usuario`),
-  CONSTRAINT `logs_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`)
+CREATE TABLE `siniestros` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cliente_id` int DEFAULT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `patente` varchar(50) NOT NULL,
+  `estado` enum('pendiente','en proceso','finalizado') DEFAULT 'pendiente',
+  `denuncia_de_siniestro` longblob,
+  `link_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  CONSTRAINT `siniestros_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `logs`
+-- Dumping data for table `siniestros`
 --
 
-LOCK TABLES `logs` WRITE;
-/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `notificaciones`
---
-
-DROP TABLE IF EXISTS `notificaciones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `notificaciones` (
-  `id_notificacion` int NOT NULL AUTO_INCREMENT,
-  `id_cliente` int DEFAULT NULL,
-  `id_poliza` int DEFAULT NULL,
-  `mensaje` varchar(255) DEFAULT NULL,
-  `fecha_notificacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id_notificacion`),
-  KEY `id_cliente` (`id_cliente`),
-  KEY `id_poliza` (`id_poliza`),
-  CONSTRAINT `notificaciones_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`),
-  CONSTRAINT `notificaciones_ibfk_2` FOREIGN KEY (`id_poliza`) REFERENCES `polizas` (`id_poliza`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `notificaciones`
---
-
-LOCK TABLES `notificaciones` WRITE;
-/*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
-/*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `polizas`
---
-
-DROP TABLE IF EXISTS `polizas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `polizas` (
-  `id_poliza` int NOT NULL AUTO_INCREMENT,
-  `id_cliente` int DEFAULT NULL,
-  `numero_poliza` varchar(50) NOT NULL,
-  `tipo_poliza` varchar(50) NOT NULL,
-  `fecha_inicio` date NOT NULL,
-  `fecha_vencimiento` date NOT NULL,
-  `monto` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id_poliza`),
-  KEY `id_cliente` (`id_cliente`),
-  CONSTRAINT `polizas_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `polizas`
---
-
-LOCK TABLES `polizas` WRITE;
-/*!40000 ALTER TABLE `polizas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `polizas` ENABLE KEYS */;
+LOCK TABLES `siniestros` WRITE;
+/*!40000 ALTER TABLE `siniestros` DISABLE KEYS */;
+/*!40000 ALTER TABLE `siniestros` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -203,17 +114,11 @@ DROP TABLE IF EXISTS `usuarios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuarios` (
-  `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `dni` varchar(20) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `contraseña` varchar(255) NOT NULL,
-  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`id_usuario`),
-  UNIQUE KEY `dni` (`dni`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(255) NOT NULL,
+  `contrasena` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -222,16 +127,70 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'1','$2b$12$N3wJC3PtE0bQ8xmW8omrLeHtPZ2SSyoAluvi9/nsKavlMqzwfJW.q'),(3,'e1234','$2b$12$1qVoZNCYds1fuatTehFGnev8CdxXrZYS0XXJzYuvJdY2kZLYr5sRK'),(4,'admin1','$2b$12$EDb18QeIj2AKgtB033LzcuMAarXT7sTyzr7d.bjF2LS6dSA8msjMW');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'gestion_seguro'
+-- Table structure for table `vehiculos`
 --
 
+DROP TABLE IF EXISTS `vehiculos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehiculos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cliente_id` int DEFAULT NULL,
+  `tipo_vehiculo` varchar(255) DEFAULT NULL,
+  `tipo_categoria` varchar(255) DEFAULT NULL,
+  `vencimiento_poliza` date DEFAULT NULL,
+  `patente` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  CONSTRAINT `vehiculos_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
--- Dumping routines for database 'gestion_seguro'
+-- Dumping data for table `vehiculos`
 --
+
+LOCK TABLES `vehiculos` WRITE;
+/*!40000 ALTER TABLE `vehiculos` DISABLE KEYS */;
+INSERT INTO `vehiculos` VALUES (1,1,'ford','tereceros completos','1992-09-18','JYK 064'),(2,2,'renault','todo riesgo','2000-05-10','AA 173 BU');
+/*!40000 ALTER TABLE `vehiculos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vencimientos`
+--
+
+DROP TABLE IF EXISTS `vencimientos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vencimientos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cliente_id` int DEFAULT NULL,
+  `apellido` varchar(15) DEFAULT NULL,
+  `patente` varchar(10) DEFAULT NULL,
+  `vencimiento_licencia` date DEFAULT NULL,
+  `vencimiento_poliza` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  KEY `idx_vencimiento_licencia` (`vencimiento_licencia`),
+  KEY `idx_vencimiento_poliza` (`vencimiento_poliza`),
+  CONSTRAINT `vencimientos_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vencimientos`
+--
+
+LOCK TABLES `vencimientos` WRITE;
+/*!40000 ALTER TABLE `vencimientos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vencimientos` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -242,4 +201,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-26 17:02:43
+-- Dump completed on 2024-11-13 15:24:58
