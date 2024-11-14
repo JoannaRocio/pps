@@ -63,7 +63,7 @@ class CompaniaModel:
 
     def buscar_companias(self, search_query):
         try:
-            query = "SELECT id_compania, nombre, sitio_web FROM companias WHERE nombre LIKE %s OR sitio_web LIKE %s"
+            query = "SELECT id_compania, nombre, sitio_web, estado FROM companias WHERE nombre LIKE %s OR sitio_web LIKE %s"
             params = (f'%{search_query}%', f'%{search_query}%')
             return self.db_connection.fetch_data(query, params)
         except Exception as e:
