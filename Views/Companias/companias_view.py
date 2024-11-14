@@ -172,10 +172,11 @@ class CompaniasView:
         """Filtra las compañías según el término de búsqueda"""
         search_term = self.search_var.get().lower()
         self.tree.delete(*self.tree.get_children())
-        companias = self.compania_model.obtener_companias()
+        companias = self.compania_model.buscar_companias(search_term)
         for compania in companias:
-            if search_term in compania[1].lower() or search_term in compania[2].lower():
-                self.tree.insert('', 'end', values=compania)
+            estado = 'disabled' if compania[3] == 'inactivo' else 'enabled'  # compania[3] es el campo `estado`
+            self.tree.insert('', 'end', values=compania[:3], tags=(estado,))
+    
     
     def open_website_link(self, event):
         """Abre el sitio web de la compañía seleccionada en el navegador"""
