@@ -17,6 +17,11 @@ class CompaniasView:
         self.root.title("Gestión de Compañías")
         self.root.config(bg='#2b2b2b')
 
+        # Configuración de estilo para Treeview
+        style = ttk.Style()
+        style.configure("Treeview", foreground="black", background="white")  # Color por defecto para filas activas
+        style.configure("Treeview.Heading", font=('Arial', 12, 'bold'), foreground="white", background='#3b3b3b')
+
         # Frame principal
         self.main_frame = ctk.CTkFrame(self.root, fg_color='#2b2b2b')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -74,9 +79,9 @@ class CompaniasView:
         """Carga las compañías en la tabla"""
         self.tree.delete(*self.tree.get_children())
         
-        # Configuración de tags de color en el Treeview
-        self.tree.tag_configure('disabled', background='red')
-        self.tree.tag_configure('enabled', background='white')
+        # Configuración del estilo para compañías deshabilitadas
+        self.tree.tag_configure('disabled', background='red', foreground='white')
+        self.tree.tag_configure('enabled', background='white', foreground='black')
 
         companias = self.compania_model.obtener_companias()
         for compania in companias:
