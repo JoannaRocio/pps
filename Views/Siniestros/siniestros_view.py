@@ -8,7 +8,7 @@ from tkinter import *
 from tkinter import ttk
 
 class SiniestrosView:
-    def __init__(self, root, cliente_model, compania_model, vencimiento_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, volver_menu_callback):
         
         # Mock de datos
         mock_data = [
@@ -22,6 +22,7 @@ class SiniestrosView:
         self.cliente_model = cliente_model
         self.compania_model = compania_model
         self.vencimiento_model = vencimiento_model
+        self.siniestros_model = siniestros_model
         self.volver_menu_callback = volver_menu_callback
 
         self.root.geometry("900x600")
@@ -40,6 +41,14 @@ class SiniestrosView:
         back_button = ctk.CTkButton(self.main_frame, text="Volver", command=self.volver_menu, fg_color='#3b3b3b', font=('Arial', 18))
         back_button.grid(row=0, column=0, padx=20, pady=20, sticky='ne')
 
+        # Campo de búsqueda
+        self.search_var = ctk.StringVar()
+        search_entry = ctk.CTkEntry(self.main_frame, textvariable=self.search_var, placeholder_text="Buscar cliente")
+        search_entry.grid(row=1, column=0, padx=20, pady=10, columnspan=3, sticky="ew")
+
+        search_button = ctk.CTkButton(self.main_frame, text="🔍", command=self.buscarCliente, fg_color='#3b3b3b', font=('Arial', 18))
+        search_button.grid(row=1, column=3, padx=20, pady=10)
+        
         # Tabla para mostrar los Siniestros
         self.columns = ('Patente', 'Vehículo', 'Apellido', 'Nombre', 'DNI', 'Estado')
         self.tree = ttk.Treeview(self.main_frame, columns=self.columns, show='headings', style="Treeview")
@@ -63,6 +72,14 @@ class SiniestrosView:
         self.tree.tag_configure('Pendiente', background='white', foreground='red')
         self.tree.tag_configure('Resuelto', background='white', foreground='green')
 
+        # Botones de funcionalidad
+        btn_add = ctk.CTkButton(self.main_frame, text="Agregar", fg_color='#3b3b3b', font=('Arial', 18))
+        btn_add.grid(row=3, column=0, padx=20, pady=10)
+
+        btn_edit = ctk.CTkButton(self.main_frame, text="Editar", fg_color='#3b3b3b', font=('Arial', 18))
+        btn_edit.grid(row=3, column=1, padx=20, pady=10)
+        
+            
         # Insertar los datos mock en la tabla y aplicar colores
         for item in mock_data:
             estado = item[5]  # El estado está en la posición 5 del array
@@ -117,11 +134,19 @@ class SiniestrosView:
         # Configurar los tags para colores para los estados
         self.tree.tag_configure('Pendiente', foreground='red')
         self.tree.tag_configure('Resuelto', foreground='green')
-
-
+        
+    def buscarCliente(self):
+        search_term = self.search_var.get().lower()  # Obtener término de búsqueda en minúsculas
+        self.treeview.delete(*self.treeview.get_children())
+        clientes = self.vencimiento_model.mostrar_vencimientos()
+        for cliente in clientes:
+            if search_term in cliente[0].lower() or search_term in cliente[1].lower() or search_term in cliente[2].lower() :
+                
+                self.treeview.insert('', 'end', values=cliente)
+                
     def volver_menu(self):
         self.main_frame.pack_forget()  # Oculta el marco actual
         self.main_frame = None  # Limpia la referencia al marco actual
 
         # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model)
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model)
