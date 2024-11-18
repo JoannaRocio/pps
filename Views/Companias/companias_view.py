@@ -6,11 +6,12 @@ from tkcalendar import DateEntry
 from Views.Home.home_view import HomeView
 
 class CompaniasView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, siniestros_model, vehiculo_model, vencimiento_model, volver_menu_callback):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
         self.vencimiento_model = vencimiento_model
+        self.vehiculo_model = vehiculo_model
         self.siniestros_model = siniestros_model
         self.volver_menu_callback = volver_menu_callback
 
@@ -96,7 +97,7 @@ class CompaniasView:
         self.main_frame = None  # Limpia la referencia al marco actual
 
         # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model)
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model, self.vehiculo_model)
 
     def open_add_company_window(self):
         """Abre la ventana para agregar una nueva compañía"""

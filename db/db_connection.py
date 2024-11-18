@@ -4,10 +4,10 @@ from mysql.connector import Error
 class DatabaseConnection:
     def __init__(self):
         self.host = '127.0.0.1'  # Cambiar por la dirección de tu servidor MySQL
-        self.database = 'gestion_seguro'
+        self.database = 'gestion_seguros'
         # self.user = 'root'
         self.user = 'root'
-        self.password = '1234'
+        self.password = '1920'
         self.connection = None
 
     def connect(self):

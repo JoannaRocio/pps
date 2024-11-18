@@ -6,12 +6,13 @@ from Views.Home.home_view import HomeView
 from tkinter import ttk
 
 class VencimientosView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, vehiculo_model, volver_menu_callback):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
+        self.vehiculo_model = vehiculo_model
         
         self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
 
@@ -79,7 +80,7 @@ class VencimientosView:
         self.main_frame = None  # Limpia la referencia al marco actual
 
         # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model)
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model)
 
 # Uso de la clase (en otro archivo, cuando se crea la vista)
 if __name__ == "__main__":

@@ -1,14 +1,19 @@
+import datetime
 import customtkinter as ctk
 from tkinter import messagebox
 from tkinter import ttk, Toplevel
 from tkcalendar import DateEntry
+from io import BytesIO
+from PIL import Image
+from tkinter import filedialog
 from Views.Home.home_view import HomeView
 
 class ClientesView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, vencimiento_model, vehiculo_model, siniestros_model, volver_menu_callback):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
+        self.vehiculo_model = vehiculo_model
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
         self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
@@ -73,7 +78,7 @@ class ClientesView:
         self.main_frame = None  # Limpia la referencia al marco actual
 
         # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model)
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model)
 
     def load_clients(self):
         self.tree.delete(*self.tree.get_children())  # Limpiar la tabla
@@ -84,7 +89,7 @@ class ClientesView:
     def view_client(self):
         selected_item = self.tree.selection()
         if selected_item:
-            client_id = self.tree.item(selected_item, 'values')[0]
+            client_id = self.tree.item(selected_item, 'values')[0]  # Cambiado de 'id_cliente' a 'id'
             cliente = self.cliente_model.obtener_cliente_por_id(client_id)
 
             if cliente:
@@ -108,7 +113,7 @@ class ClientesView:
     def open_edit_client_window(self):
         selected_item = self.tree.selection()
         if selected_item:
-            client_id = self.tree.item(selected_item, 'values')[0]
+            client_id = self.tree.item(selected_item, 'values')[0]  # Cambiado de 'id_cliente' a 'id'
             self.client_form_window("Editar Cliente", client_id)
         else:
             messagebox.showwarning("Advertencia", "Seleccione un cliente para editar.")
@@ -118,7 +123,7 @@ class ClientesView:
         form_window.title(title)
         form_window.config(bg='#2b2b2b')
 
-        # Campos del formulario
+        # Campos del formulario (sin cambios)
         ctk.CTkLabel(form_window, text="Nombre", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
         name_entry = ctk.CTkEntry(form_window)
         name_entry.grid(row=0, column=1, padx=10, pady=10)
@@ -138,37 +143,105 @@ class ClientesView:
         ctk.CTkLabel(form_window, text="Dirección", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
         address_entry = ctk.CTkEntry(form_window)
         address_entry.grid(row=4, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Código Postal", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
+        cp_entry = ctk.CTkEntry(form_window)
+        cp_entry.grid(row=4, column=1, padx=10, pady=10)
 
         ctk.CTkLabel(form_window, text="Email", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
         email_entry = ctk.CTkEntry(form_window)
         email_entry.grid(row=5, column=1, padx=10, pady=10)
 
-        ctk.CTkLabel(form_window, text="Fecha de Nacimiento", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
-        dob_entry = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
-        dob_entry.grid(row=6, column=1, padx=10, pady=10)
+        ctk.CTkLabel(form_window, text="Fecha de vencimiento", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
+        vencimiento_entry = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+        vencimiento_entry.grid(row=6, column=1, padx=10, pady=10)
+        
+        # ctk.CTkLabel(form_window, text="Fecha vencimiento", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
+        # vencimiento_entry = ctk.CTkEntry(form_window)
+        # vencimiento_entry.grid(row=4, column=1, padx=10, pady=10)
 
-        if client_id:  # Si es edición, cargar datos existentes
+        # Botones para cargar imágenes de DNI y Licencia
+        dni_foto_button = ctk.CTkButton(form_window, text="Cargar Foto DNI", command=self.cargar_dni_foto)
+        dni_foto_button.grid(row=7, column=0, padx=10, pady=10)
+
+        licencia_foto_button = ctk.CTkButton(form_window, text="Cargar Foto Licencia", command=self.cargar_foto_licencia)
+        licencia_foto_button.grid(row=7, column=1, padx=10, pady=10)
+
+        # Cargar datos si es edición
+        if client_id:
             cliente = self.cliente_model.obtener_cliente_por_id(client_id)
-            if cliente:  # Verifica que el cliente existe
-                name_entry.insert(0, cliente[1])  # Asumiendo que los índices corresponden a los datos
+            if cliente:
+                name_entry.insert(0, cliente[1])
                 surname_entry.insert(0, cliente[2])
-                phone_entry.insert(0, cliente[3])
-                dni_entry.insert(0, cliente[4])
-                address_entry.insert(0, cliente[5])
-                email_entry.insert(0, cliente[6])
-                dob_entry.set_date(cliente[7])  # Fecha de nacimiento
+                dni_entry.insert(0, cliente[3])
+                email_entry.insert(0, cliente[4])
+                phone_entry.insert(0, cliente[5])
+                cp_entry.insert(0, cliente[6])
+                address_entry.insert(0, cliente[7])
+                vencimiento_entry.insert(0, cliente[8])
+                # dob_entry.set_date(cliente[9])
 
-        save_button = ctk.CTkButton(form_window, text="Guardar", command=lambda: self.save_client(client_id, name_entry.get(), surname_entry.get(), phone_entry.get(), dni_entry.get(), address_entry.get(), email_entry.get(), dob_entry.get()))
-        save_button.grid(row=7, column=0, columnspan=2, padx=10, pady=20)
+        # Botón de guardar
+        save_button = ctk.CTkButton(
+            form_window, text="Guardar",
+            # nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado
+            command=lambda: self.save_client(
+                client_id, name_entry.get(), surname_entry.get(), dni_entry.get(), email_entry.get(), phone_entry.get(), cp_entry.get(),
+                address_entry.get(), vencimiento_entry.get()
+            )
+        )
+        save_button.grid(row=8, column=0, columnspan=2, padx=10, pady=20)
 
-    def save_client(self, client_id, name, surname, phone, dni, address, email, dob):
-        if client_id:  # Si existe, actualizar
-            self.cliente_model.editar_cliente(client_id, name, surname, phone, dni, address, email, dob)
-        else:  # Si no, crear nuevo
-            self.cliente_model.agregar_cliente(name, surname, phone, dni, address, email, dob)
-        self.load_clients()  # Recargar la lista de clientes
+    def save_client(self, client_id, name, surname, dni, email, phone, cp, address, vencimiento_licencia):
+        # Convertir imágenes a bytes
+        dni_foto_data = self.convertir_imagen_a_bytes(self.dni_foto) if self.dni_foto else None
+        foto_licencia_data = self.convertir_imagen_a_bytes(self.foto_licencia) if self.foto_licencia else None
+        
+        # vencimiento_licencia = "2000-01-02"
+
+        
+# nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado
+        # Guardar o actualizar el cliente
+        if client_id:
+            self.cliente_model.editar_cliente(client_id, name, surname, dni, email, phone, cp, address, vencimiento_licencia, dni_foto_data, foto_licencia_data)
+        else:
+            self.cliente_model.agregar_cliente(name, surname, phone, dni, email, phone, cp, address, vencimiento_licencia, dni_foto_data, foto_licencia_data)
+
+        # Recargar lista y notificar
+        self.load_clients()
         messagebox.showinfo("Éxito", "Cliente guardado correctamente.")
 
+    def convertir_imagen_a_bytes(self, imagen):
+        if imagen:
+            img = Image.open(imagen)
+            byte_array = BytesIO()
+            img.save(byte_array, format='PNG')  # o el formato que necesites
+            return byte_array.getvalue()
+        return None
+    
+    def cargar_dni_foto(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+        if file_path:
+            self.dni_foto = Image.open(file_path)
+
+    def cargar_foto_licencia(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+        if file_path:
+            self.foto_licencia = Image.open(file_path)
+
+    def convertir_imagen_a_bytes(self, imagen):
+        byte_io = BytesIO()
+        imagen.save(byte_io, format="JPEG")
+        return byte_io.getvalue()
+    
+    def search_clients(self):
+        search_term = self.search_var.get().lower()
+        self.tree.delete(*self.tree.get_children())
+        clientes = self.cliente_model.obtener_clientes()
+        for cliente in clientes:
+            if search_term in cliente[1].lower() or search_term in cliente[2].lower():
+                self.tree.insert('', 'end', values=cliente)
+                
     def delete_client(self):
         selected_item = self.tree.selection()
         if selected_item:
@@ -179,10 +252,3 @@ class ClientesView:
         else:
             messagebox.showwarning("Advertencia", "Seleccione un cliente para eliminar.")
 
-    def search_clients(self):
-        search_term = self.search_var.get().lower()
-        self.tree.delete(*self.tree.get_children())
-        clientes = self.cliente_model.obtener_clientes()
-        for cliente in clientes:
-            if search_term in cliente[1].lower() or search_term in cliente[2].lower():
-                self.tree.insert('', 'end', values=cliente)

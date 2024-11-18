@@ -1,3 +1,7 @@
+import mysql.connector
+from io import BytesIO
+from PIL import Image
+
 class ClienteModel:
     def __init__(self, db_connection):
         self.db_connection = db_connection
@@ -5,14 +9,17 @@ class ClienteModel:
     def obtener_clientes(self):
         try:
             query = "SELECT id, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia FROM clientes"
-            return self.db_connection.fetch_data(query)
+            clientes = self.db_connection.fetch_data(query)
+            print("Clientes obtenidos:", clientes)  # Depuración
+            return clientes if clientes else []
         except Exception as e:
             print(f"Error al obtener clientes: {str(e)}")
-            return []
+            return []  # Devuelve una lista vacía si hay un error
+
 
     def obtener_cliente_por_id(self, client_id):
         try:
-            query = "SELECT * FROM clientes WHERE id_cliente = %s"
+            query = "SELECT * FROM clientes WHERE id = %s"
             params = (client_id,)
             cliente = self.db_connection.fetch_data(query, params)
             if cliente:
@@ -22,18 +29,9 @@ class ClienteModel:
             print(f"Error al obtener cliente por ID: {str(e)}")
             return None
 
-    def agregar_cliente(self, nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento):
-        try:
-            query = "INSERT INTO clientes (nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-            params = (nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento)
-            self.db_connection.execute_query(query, params)
-            print("Cliente agregado con éxito")
-        except Exception as e:
-            print(f"Error al agregar cliente: {str(e)}")
-
     def editar_cliente(self, client_id, nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento):
         try:
-            query = "UPDATE clientes SET nombre=%s, apellido=%s, telefono=%s, dni=%s, direccion=%s, email=%s, fecha_nacimiento=%s WHERE id_cliente=%s"
+            query = "UPDATE clientes SET nombre=%s, apellido=%s, telefono=%s, dni=%s, domicilio=%s, email=%s, fecha_nacimiento=%s WHERE id=%s"
             params = (nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento, client_id)
             self.db_connection.execute_query(query, params)
             print("Cliente editado con éxito")
@@ -42,7 +40,7 @@ class ClienteModel:
 
     def eliminar_cliente(self, client_id):
         try:
-            query = "DELETE FROM clientes WHERE id_cliente = %s"
+            query = "DELETE FROM clientes WHERE id = %s"
             params = (client_id,)
             self.db_connection.execute_query(query, params)
             print("Cliente eliminado con éxito")
@@ -64,4 +62,37 @@ class ClienteModel:
             return self.db_connection.fetch_data(query)
         except Exception as e:
             print(f"Error al obtener compañías: {str(e)}")
-            return []    
+            return []
+
+    def agregar_cliente(self, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado):
+        dni_foto_data = dni_foto if dni_foto else None
+        foto_licencia_data = foto_licencia if foto_licencia else None
+        
+        print('fecha', vencimiento_licencia)
+        if vencimiento_licencia == "":
+            vencimiento_licencia = '2000-02-03'
+        
+        print('fecha: ', vencimiento_licencia)
+        
+        # if estado == "":
+        estado = 'activo'
+        
+        print('estado: ', estado)
+            
+        sql = """INSERT INTO clientes (nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        valores = (nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto_data, foto_licencia_data, estado)
+
+        try:
+            self.db_connection.execute_query(sql, valores)
+            print("Cliente agregado exitosamente.")
+        except Exception as e:
+            print(f"Error al agregar el cliente: {str(e)}")
+            
+    def convertir_imagen_a_bytes(self, imagen):
+        if imagen:
+            img = Image.open(imagen)
+            byte_array = BytesIO()
+            img.save(byte_array, format='PNG')  # o el formato que necesites
+            return byte_array.getvalue()
+        return None

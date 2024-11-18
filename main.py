@@ -5,6 +5,7 @@ from Model.CompaniaModel import CompaniaModel
 from Model.ClienteModel import ClienteModel
 from Model.UsuarioModel import UsuarioModel
 from Model.VencimientosModel import VencimientosModel
+from Model.vehiculo_model import VehiculoModel
 from db.db_connection import DatabaseConnection
 # from Views.Clientes.clientes_view import ClientesView
 from Views.Login.login_view import UsuarioView
@@ -35,12 +36,14 @@ def on_login_success():
     root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
     # Crear una instancia del modelo y de la vista principal
+    
     cliente_model = ClienteModel(db_connection)
     compania_model = CompaniaModel(db_connection)
     vencimiento_model = VencimientosModel(db_connection)
     siniestros_model = SiniestrosModel(db_connection)
+    vehiculo_model = VehiculoModel(db_connection)
     
-    app = HomeView(root, cliente_model, compania_model, vencimiento_model, siniestros_model)
+    app = HomeView(root, cliente_model, compania_model, vencimiento_model, siniestros_model, vehiculo_model)
 
     # Iniciar el bucle principal de la interfaz gráfica
     root.mainloop()

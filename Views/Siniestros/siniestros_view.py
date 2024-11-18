@@ -8,7 +8,7 @@ from tkinter import *
 from tkinter import ttk
 
 class SiniestrosView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, vehiculo_model, volver_menu_callback):
         
         # Mock de datos
         mock_data = [
@@ -23,6 +23,7 @@ class SiniestrosView:
         self.compania_model = compania_model
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
+        self.vehiculo_model = vehiculo_model
         self.volver_menu_callback = volver_menu_callback
 
         self.root.geometry("900x600")
@@ -149,4 +150,4 @@ class SiniestrosView:
         self.main_frame = None  # Limpia la referencia al marco actual
 
         # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model)
+        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model, self.vehiculo_model)
