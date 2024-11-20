@@ -69,7 +69,7 @@ def main():
         
         # despues borrar esto
         # cliente_model = 1
-        # app = HomeView(root, cliente_model)
+        # app = HomeView(root, cliente_model)id
         # borrar lo que hay entre medio
         
         

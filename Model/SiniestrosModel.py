@@ -15,7 +15,7 @@ class SiniestrosModel:
             # La consulta SQL busca tanto en la tabla clientes (nombre y apellido)
             # como en la tabla vehiculos (patente). Usamos un JOIN para combinarlas.
             query = """
-            SELECT c.id_cliente, c.nombre, c.apellido, c.telefono, c.dni, v.patente
+            SELECT c.id, c.nombre, c.apellido, c.telefono, c.dni, v.patente
             FROM clientes c
             LEFT JOIN vehiculos v ON c.id_cliente = v.id_cliente
             WHERE c.nombre LIKE %s OR c.apellido LIKE %s OR v.patente LIKE %s

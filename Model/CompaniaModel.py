@@ -72,7 +72,7 @@ class CompaniaModel:
 
     def obtener_clientes(self):
         try:
-            query = "SELECT id_cliente, nombre, apellido, telefono, dni FROM clientes"
+            query = "SELECT id, nombre, apellido, telefono, dni FROM clientes"
             return self.db_connection.fetch_data(query)
         except Exception as e:
             print(f"Error al obtener clientes: {str(e)}")

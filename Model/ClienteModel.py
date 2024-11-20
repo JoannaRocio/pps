@@ -8,13 +8,13 @@ class ClienteModel:
 
     def obtener_clientes(self):
         try:
-            query = "SELECT id, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia FROM clientes"
-            clientes = self.db_connection.fetch_data(query)
-            print("Clientes obtenidos:", clientes)  # Depuración
-            return clientes if clientes else []
+            query = "SELECT id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia FROM clientes"
+            # clientes = self.db_connection.fetch_data(query)
+            # print("Clientes obtenidos:", clientes)
+            return self.db_connection.fetch_data(query)
         except Exception as e:
             print(f"Error al obtener clientes: {str(e)}")
-            return []  # Devuelve una lista vacía si hay un error
+            return []  # Devuelve una lista vacía si hay un error 
 
 
     def obtener_cliente_por_id(self, client_id):
@@ -29,10 +29,10 @@ class ClienteModel:
             print(f"Error al obtener cliente por ID: {str(e)}")
             return None
 
-    def editar_cliente(self, client_id, nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento):
+    def editar_cliente(self, client_id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia,):
         try:
-            query = "UPDATE clientes SET nombre=%s, apellido=%s, telefono=%s, dni=%s, domicilio=%s, email=%s, fecha_nacimiento=%s WHERE id=%s"
-            params = (nombre, apellido, telefono, dni, direccion, email, fecha_nacimiento, client_id)
+            query = "UPDATE clientes SET nombre=%s, apellido=%s, dni=%s,  email=%s, telefono=%s, fecha_nacimiento=%s, cp=%s, domicilio=%s, vencimiento_licencia=%s WHERE id=%s"
+            params = (nombre, apellido,dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, client_id)
             self.db_connection.execute_query(query, params)
             print("Cliente editado con éxito")
         except Exception as e:
@@ -49,7 +49,7 @@ class ClienteModel:
 
     def buscar_clientes(self, search_query):
         try:
-            query = "SELECT id, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia FROM clientes WHERE nombre LIKE %s OR apellido LIKE %s"
+            query = "SELECT nombre, apellido WHERE nombre LIKE %s OR apellido LIKE %s"
             params = (f'%{search_query}%', f'%{search_query}%')
             return self.db_connection.fetch_data(query, params)
         except Exception as e:
@@ -64,7 +64,7 @@ class ClienteModel:
             print(f"Error al obtener compañías: {str(e)}")
             return []
 
-    def agregar_cliente(self, nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado):
+    def agregar_cliente(self, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado):
         dni_foto_data = dni_foto if dni_foto else None
         foto_licencia_data = foto_licencia if foto_licencia else None
         
@@ -74,14 +74,14 @@ class ClienteModel:
         
         print('fecha: ', vencimiento_licencia)
         
-        # if estado == "":
+        # if estado == "": id_cliente
         estado = 'activo'
         
         print('estado: ', estado)
             
-        sql = """INSERT INTO clientes (nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado) 
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-        valores = (nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto_data, foto_licencia_data, estado)
+        sql = """INSERT INTO clientes (nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        valores = (nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto_data, foto_licencia_data, estado)
 
         try:
             self.db_connection.execute_query(sql, valores)

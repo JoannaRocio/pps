@@ -7,7 +7,7 @@ class DatabaseConnection:
         self.database = 'gestion_seguros'
         # self.user = 'root'
         self.user = 'root'
-        self.password = '1920'
+        self.password = '1234'
         self.connection = None
 
     def connect(self):

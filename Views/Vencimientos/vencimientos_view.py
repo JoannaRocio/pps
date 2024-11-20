@@ -72,7 +72,6 @@ class VencimientosView:
         clientes = self.vencimiento_model.mostrar_vencimientos()
         for cliente in clientes:
             if search_term in cliente[0].lower() or search_term in cliente[1].lower() or search_term in cliente[2].lower() :
-                
                 self.treeview.insert('', 'end', values=cliente)
 
     def volver_menu(self):
