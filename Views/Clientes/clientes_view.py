@@ -71,8 +71,8 @@ class ClientesView:
         btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.open_edit_client_window, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=2, padx=20, pady=10)
         
-        btn_view = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_view.grid(row=3, column=3, padx=20, pady=10)
+        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_carga.grid(row=3, column=3, padx=20, pady=10)
 
         btn_delete = ctk.CTkButton(self.main_frame, text="Eliminar Cliente", command=self.delete_client, fg_color='#3b3b3b', font=('Arial', 18))
         btn_delete.grid(row=3, column=4, padx=20, pady=10)
@@ -161,9 +161,51 @@ class ClientesView:
         licencia_label.pack(pady=10)
 
 
+    def abrir_ventana_vehiculo(self):
+        self.cargar_vehiculo("Agregar Vehiculo")
+    
+    
+    def cargar_vehiculo(self):
+        form_window = Toplevel(self.root)
+        form_window.title("Agregar Vehiculo")
+        form_window.config(bg='#2b2b2b') 
+        
+        años = [str(year) for year in range(1995, 2031)]
 
-
-
+        ctk.CTkLabel(form_window, text="Marca", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
+        marca = ctk.CTkEntry(form_window)
+        marca.grid(row=0, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Modelo", fg_color='#2b2b2b', text_color='white').grid(row=1, column=0, padx=10, pady=10)
+        modelo = ctk.CTkEntry(form_window)
+        modelo.grid(row=1, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Año", fg_color='#2b2b2b', text_color='white').grid(row=2, column=0, padx=10, pady=10)
+        año = ttk.Combobox(form_window, values=años, state="readonly")
+        año.grid(row=2, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Patente", fg_color='#2b2b2b', text_color='white').grid(row=3, column=0, padx=10, pady=10)
+        patente = ctk.CTkEntry(form_window)
+        patente.grid(row=3, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Compañia", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
+        compañia = ctk.CTkEntry(form_window)
+        compañia.grid(row=4, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
+        tVehiculo = ctk.CTkEntry(form_window)
+        tVehiculo.grid(row=5, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Categoria Seguro", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
+        categoria = ctk.CTkEntry(form_window)
+        categoria.grid(row=6, column=1, padx=10, pady=10)
+        
+        ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
+        fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+        fecha_poliza.grid(row=7, column=1, padx=10, pady=10)
+        
+        
+    
 
 
 
