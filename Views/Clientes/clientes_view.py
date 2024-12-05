@@ -309,32 +309,57 @@ class ClientesView:
         # Botón de guardar
         save_button = ctk.CTkButton(
             form_window, text="Guardar",
-            # nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado
-            command=lambda: self.save_client(form_window,
-                client_id, nombre.get(), apellido.get(), dni.get(), email.get(), telefono.get(), fecha_nacimiento.get(), cp.get(),
-                domicilio.get(), vencimiento_licencia.get()
+            command=lambda: self.save_client(
+                form_window, client_id, nombre.get(), apellido.get(), dni.get(), email.get(), telefono.get(),
+                fecha_nacimiento.get_date(), cp.get(), domicilio.get(), vencimiento_licencia.get_date(),
+                self.dni_foto, self.foto_licencia
             )
         )
-        save_button.grid(row=10, column=0, columnspan=2, padx=10, pady=20)
+        save_button.grid(row=10, column=0, columnspan=2, pady=20)
         
         
-    def save_client(self, form_window, client_id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, estado='activo'):
-        # Convertir imágenes a bytes
-        dni_foto_data = self.convertir_imagen_a_bytes(self.dni_foto) if self.dni_foto else None
-        foto_licencia_data = self.convertir_imagen_a_bytes(self.foto_licencia) if self.foto_licencia else None
-        
-        # vencimiento_licencia = "2000-01-02"
-        # nombre, apellido, dni, email, telefono, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado
-        # Guardar o actualizar el cliente
-        if client_id:
-            self.cliente_model.editar_cliente(client_id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia)
-        else:
-            self.cliente_model.agregar_cliente(nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto_data, foto_licencia_data, estado)        
-    
-        # Recargar lista y notificar
-        form_window.destroy()
-        self.load_clients()
-        messagebox.showinfo("Éxito", "Cliente guardado correctamente.")
+    def save_client(self, form_window, client_id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia):
+        """Guarda un cliente nuevo o actualiza uno existente."""
+        if not nombre or not apellido or not dni or not email or not telefono:
+            messagebox.showwarning("Advertencia", "Por favor, completa todos los campos obligatorios.")
+            return
+
+        try:
+            # Convertir las imágenes a bytes si son objetos Image
+            dni_foto_bytes = self.cliente_model.convertir_imagen_a_bytes(dni_foto) if isinstance(dni_foto, Image.Image) else dni_foto
+            foto_licencia_bytes = self.cliente_model.convertir_imagen_a_bytes(foto_licencia) if isinstance(foto_licencia, Image.Image) else foto_licencia
+
+            if client_id:  # Editar cliente existente
+                self.cliente_model.editar_cliente(
+                    client_id=client_id,
+                    nombre=nombre,
+                    apellido=apellido,
+                    dni=dni,
+                    email=email,
+                    telefono=telefono,
+                    fecha_nacimiento=fecha_nacimiento,
+                    cp=cp,
+                    domicilio=domicilio,
+                    vencimiento_licencia=vencimiento_licencia,
+                    dni_foto=dni_foto_bytes,
+                    foto_licencia=foto_licencia_bytes,
+                )
+                messagebox.showinfo("Éxito", "Cliente actualizado exitosamente.")  # Mostrar mensaje siempre al editar
+
+            else:  # Crear nuevo cliente
+                creado = self.cliente_model.agregar_cliente(
+                    nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto_bytes, foto_licencia_bytes
+                )
+                if creado:
+                    messagebox.showinfo("Éxito", "Cliente agregado exitosamente.")
+                else:
+                    messagebox.showerror("Error", "No se pudo agregar el cliente.")
+
+            form_window.destroy()  # Cerrar ventana
+            self.load_clients()  # Recargar clientes
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error al guardar el cliente: {str(e)}")
         
     def convertir_imagen_a_bytes(self, imagen):
         if imagen:
@@ -384,4 +409,3 @@ class ClientesView:
             messagebox.showinfo("Éxito", "Cliente eliminado correctamente.")
         else:
             messagebox.showwarning("Advertencia", "Seleccione un cliente para eliminar.")
-
