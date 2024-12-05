@@ -5,12 +5,16 @@ from tkinter import ttk, Toplevel
 from tkcalendar import DateEntry
 from io import BytesIO
 from PIL import Image
+from PIL import ImageTk
 from tkinter import filedialog
 from Views.Home.home_view import HomeView
 
 class ClientesView:
     def __init__(self, root, cliente_model, compania_model, vencimiento_model, vehiculo_model, siniestros_model, volver_menu_callback):
         self.root = root
+        self.dni_foto = None
+        self.foto_licencia = None
+
         self.cliente_model = cliente_model
         self.compania_model = compania_model
         self.vehiculo_model = vehiculo_model
@@ -94,6 +98,10 @@ class ClientesView:
         for cliente in sorted(clientes, key=lambda x: (x[1])):  # Ordenar por nombre y apellido
             self.tree.insert('', 'end', values=cliente)
 
+
+
+
+
     def view_client(self):
         selected_item = self.tree.selection()
         if selected_item:
@@ -107,13 +115,57 @@ class ClientesView:
 
                 ctk.CTkLabel(detail_window, text="Datos del Cliente", font=('Arial', 18), text_color='white').pack(pady=10)
 
-                keys = ['ID', 'NOMBRE', 'APELIIDO', 'DNI', 'EMAIL', 'TELÉFONO', 'FECHA DE NACIMIENTO', 'CODIGO POSTAL', 'DOMICILIO', 'VENCIMIENTO DE LICENCIA']
+                keys = ['ID', 'NOMBRE', 'APELIIDO', 'DNI', 'EMAIL', 'TELÉFONO', 'FECHA DE NACIMIENTO', 'CODIGO POSTAL', 'DOMICILIO', 'VENCIMIENTO DE LICENCIA', ]
                 for key, value in zip(keys, cliente):
                     ctk.CTkLabel(detail_window, text=f"{key}: {value}", fg_color='#2b2b2b', text_color='white').pack(pady=5)
+
+                # Botón para ver la foto del DNI
+                if cliente[10]: 
+                    dni_button = ctk.CTkButton(detail_window, text="Ver Foto DNI", command=lambda: self.ver_foto_dni(cliente[10]))
+                    dni_button.pack(pady=5)
+
+                # Botón para ver la foto de la Licencia
+                if cliente[11]:  
+                    licencia_button = ctk.CTkButton(detail_window, text="Ver Foto Licencia", command=lambda: self.ver_foto_licencia(cliente[11]))
+                    licencia_button.pack(pady=5)
+
             else:
                 messagebox.showerror("Error", "Cliente no encontrado.")
         else:
             messagebox.showwarning("Advertencia", "Seleccione un cliente para ver.")
+
+    def ver_foto_dni(self, foto_dni_bytes):
+        foto_dni_window = Toplevel(self.root)
+        foto_dni_window.title("Foto del DNI")
+        foto_dni_window.config(bg='#2b2b2b')
+
+        dni_image = Image.open(BytesIO(foto_dni_bytes))
+        dni_image = dni_image.resize((300, 300)) 
+        dni_photo = ImageTk.PhotoImage(dni_image)
+
+        dni_label = ctk.CTkLabel(foto_dni_window, image=dni_photo)
+        dni_label.image = dni_photo 
+        dni_label.pack(pady=10)
+
+    def ver_foto_licencia(self, foto_licencia_bytes):
+        foto_licencia_window = Toplevel(self.root)
+        foto_licencia_window.title("Foto de la Licencia")
+        foto_licencia_window.config(bg='#2b2b2b')
+
+        licencia_image = Image.open(BytesIO(foto_licencia_bytes))
+        licencia_image = licencia_image.resize((300, 300))
+        licencia_photo = ImageTk.PhotoImage(licencia_image)
+
+        licencia_label = ctk.CTkLabel(foto_licencia_window, image=licencia_photo)
+        licencia_label.image = licencia_photo
+        licencia_label.pack(pady=10)
+
+
+
+
+
+
+
 
     def open_add_client_window(self):
         self.client_form_window("Agregar Cliente", None)
@@ -231,20 +283,28 @@ class ClientesView:
             return byte_array.getvalue()
         return None
     
+    
     def cargar_dni_foto(self):
         file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
         if file_path:
             self.dni_foto = Image.open(file_path)
+            
+            if self.dni_foto.mode != 'RGB':
+                self.dni_foto = self.dni_foto.convert('RGB')
 
     def cargar_foto_licencia(self):
         file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
         if file_path:
             self.foto_licencia = Image.open(file_path)
+           
+            if self.foto_licencia.mode != 'RGB':
+                self.foto_licencia = self.foto_licencia.convert('RGB')
 
     def convertir_imagen_a_bytes(self, imagen):
         byte_io = BytesIO()
         imagen.save(byte_io, format="JPEG")
         return byte_io.getvalue()
+    
     
     def search_clients(self):
         search_term = self.search_var.get().lower()
