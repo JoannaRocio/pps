@@ -99,6 +99,21 @@ class ClientesView:
             self.tree.insert('', 'end', values=cliente)
 
 
+    def centrar_ventana(self, ventana):
+        # Obtener las dimensiones de la pantalla
+        ancho_pantalla = ventana.winfo_screenwidth()
+        altura_pantalla = ventana.winfo_screenheight()
+
+        # Obtener las dimensiones de la ventana
+        ancho_ventana = 400  # Puedes ajustar el tamaño según lo necesites
+        altura_ventana = 550  # Igualmente, ajusta el tamaño de la ventana según lo necesites
+
+        # Calcular las coordenadas para centrar la ventana
+        x = (ancho_pantalla - ancho_ventana) // 2
+        y = (altura_pantalla - altura_ventana) // 2
+
+        # Posicionar la ventana en el centro
+        ventana.geometry(f'{ancho_ventana}x{altura_ventana}+{x}+{y}')
 
 
 
@@ -112,6 +127,7 @@ class ClientesView:
                 detail_window = Toplevel(self.root)
                 detail_window.title("Datos del Cliente")
                 detail_window.config(bg='#2b2b2b')
+                self.centrar_ventana(detail_window)
 
                 ctk.CTkLabel(detail_window, text="Datos del Cliente", font=('Arial', 18), text_color='white').pack(pady=10)
 
@@ -166,9 +182,12 @@ class ClientesView:
     
     
     def cargar_vehiculo(self):
+        
         form_window = Toplevel(self.root)
         form_window.title("Agregar Vehiculo")
         form_window.config(bg='#2b2b2b') 
+        
+        self.centrar_ventana(form_window)
         
         años = [str(year) for year in range(1995, 2031)]
 
@@ -224,7 +243,7 @@ class ClientesView:
         form_window = Toplevel(self.root)
         form_window.title(title)
         form_window.config(bg='#2b2b2b') 
-
+        self.centrar_ventana(form_window)
         # Campos del formulario (sin cambios)
         ctk.CTkLabel(form_window, text="Nombre", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
         nombre = ctk.CTkEntry(form_window)
