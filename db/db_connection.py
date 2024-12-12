@@ -3,11 +3,12 @@ from mysql.connector import Error
 
 class DatabaseConnection:
     def __init__(self):
-        self.host = '127.0.0.1'  # Cambiar por la dirección de tu servidor MySQL
+        self.host = 'localhost'  # Cambiar por la dirección de tu servidor MySQL
         self.database = 'gestion_seguros'
         # self.user = 'root'
         self.user = 'root'
         self.password = '1234'
+        self.port = 8000
         self.connection = None
 
     def connect(self):
@@ -19,7 +20,8 @@ class DatabaseConnection:
                 host=self.host,
                 database=self.database,
                 user=self.user,
-                password=self.password
+                password=self.password,
+               #port=self.port
             )
             if self.connection.is_connected():
                 print("Conexión exitosa a la base de datos")
