@@ -23,8 +23,11 @@ class ClienteModel:
             query = "SELECT * FROM clientes WHERE id = %s"
             params = (client_id,)
             cliente = self.db_connection.fetch_data(query, params)
-            # Asegúrate de que se devuelve como un diccionario
-            return cliente[0] if cliente else None
+            
+            # Si fetch_data devuelve una lista de tuplas, retornamos la primera tupla
+            if cliente:
+                return cliente[0]  # Retorna la primera tupla de la lista
+            return None
         except Exception as e:
             print(f"Error al obtener cliente por ID: {str(e)}")
             return None
@@ -42,23 +45,24 @@ class ClienteModel:
                 return
 
             # Usar las imágenes actuales si no se proporcionan nuevas
-            dni_foto = dni_foto if dni_foto is not None else cliente_actual['dni_foto']
-            foto_licencia = foto_licencia if foto_licencia is not None else cliente_actual['foto_licencia']
+            dni_foto_bytes = self.convertir_imagen_a_bytes(dni_foto) if isinstance(dni_foto, Image.Image) else cliente_actual[10]  # Índice correspondiente
+            foto_licencia_bytes = self.convertir_imagen_a_bytes(foto_licencia) if isinstance(foto_licencia, Image.Image) else cliente_actual[11]  # Índice correspondiente
 
             # Query para actualizar los datos del cliente
             query = """
             UPDATE clientes 
             SET nombre=%s, apellido=%s, dni=%s, email=%s, telefono=%s, 
                 fecha_nacimiento=%s, cp=%s, domicilio=%s, vencimiento_licencia=%s,
-                dni_foto=%s, foto_licencia=%s 
+                dni_foto=%s, foto_licencia=%s
             WHERE id=%s
             """
             params = (
                 nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, 
-                domicilio, vencimiento_licencia, dni_foto, foto_licencia, client_id
+                domicilio, vencimiento_licencia, dni_foto_bytes, foto_licencia_bytes, client_id
             )
             self.db_connection.execute_query(query, params)
             print("Cliente editado con éxito, incluyendo imágenes.")
+            
         except Exception as e:
             print(f"Error al editar cliente: {str(e)}")
 
