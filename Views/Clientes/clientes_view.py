@@ -75,10 +75,10 @@ class ClientesView:
         boton_carga.grid(row=3, column=3, padx=20, pady=10)
 
         btn_disable = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.deshabilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_disable.grid(row=3, column=2, padx=20, pady=10)
+        btn_disable.grid(row=3, column=4, padx=20, pady=10)
 
         btn_enable = ctk.CTkButton(self.main_frame, text="Habilitar", command=self.habilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_enable.grid(row=3, column=3, padx=20, pady=10)
+        btn_enable.grid(row=3, column=5, padx=20, pady=10)
 
         # Configuración del estiramiento de las columnas
         self.main_frame.grid_rowconfigure(2, weight=1)
