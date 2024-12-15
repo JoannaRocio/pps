@@ -15,13 +15,11 @@ class ClienteModel:
             return []
 
     def obtener_cliente_por_id(self, client_id):
-        """Obtiene todos los datos de un cliente específico por su ID."""
         try:
             query = "SELECT * FROM clientes WHERE id = %s"
             params = (client_id,)
             cliente = self.db_connection.fetch_data(query, params)
             
-            # Si fetch_data devuelve una lista de tuplas, retornamos la primera tupla
             if cliente:
                 return cliente[0]  # Retorna la primera tupla de la lista
             return None

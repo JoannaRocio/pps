@@ -76,8 +76,7 @@ class VehiculosView:
                 fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
                 fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
                 
-                boton_guardar = ctk.CTkButton(form_window, text="GUARDAR", fg_color='green', font=('Arial', 18))
-                boton_guardar.grid(row=10, column=0, padx=10, pady=10)
-        
-        # else:
-        #     messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")
+                boton_guardar = ctk.CTkButton(form_window, text="Guardar", fg_color='green', font=('Arial', 18))
+                boton_guardar.grid(row=10, column=1, padx=10, pady=10)
+    
+    

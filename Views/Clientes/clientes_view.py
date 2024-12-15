@@ -74,7 +74,7 @@ class ClientesView:
         btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.open_edit_client_window, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=2, padx=20, pady=10)
         
-        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_ve, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
         boton_carga.grid(row=3, column=3, padx=20, pady=10)
 
         btn_disable = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.deshabilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
@@ -91,7 +91,7 @@ class ClientesView:
         # Cargar los clientes al inicio
         self.obtener_clientes()
 
-    def cargar_ve(self):
+    def cargar_vehiculo(self):
         cli_seleccionado = self.tree.selection()
         if cli_seleccionado:
             client_id = self.tree.item(cli_seleccionado, 'values')[0]  
@@ -121,7 +121,6 @@ class ClientesView:
             estado = 'deshabilitado' if cliente[10] == 'inactivo' else 'habilitado'
             self.tree.insert('', 'end', values=cliente[:10], tags=(estado,))
 
-
     def centrar_ventana(self, ventana):
         # Obtener las dimensiones de la pantalla
         ancho_pantalla = ventana.winfo_screenwidth()
@@ -137,8 +136,6 @@ class ClientesView:
 
         # Posicionar la ventana en el centro
         ventana.geometry(f'{ancho_ventana}x{altura_ventana}+{x}+{y}')
-
-
 
     def view_client(self):
         selected_item = self.tree.selection()
@@ -198,72 +195,6 @@ class ClientesView:
         licencia_label = ctk.CTkLabel(foto_licencia_window, image=licencia_photo)
         licencia_label.image = licencia_photo
         licencia_label.pack(pady=10)
-
-    
-    # def abrir_ventana_vehiculo(self):
-    #     self.cargar_vehiculo("Agregar Vehiculo")
-    
-    
-    # def cargar_vehiculo(self):
-    #     cli_seleccionado = self.tree.selection()
-    #     if cli_seleccionado:
-    #         client_id = self.tree.item(cli_seleccionado, 'values')[0]  
-    #         cliente = self.cliente_model.obtener_cliente_por_id(client_id)
-
-    #         if cliente:
-    #             form_window = Toplevel(self.root)
-    #             form_window.title("Agregar Vehiculo")
-    #             form_window.config(bg='#2b2b2b') 
-                
-    #             self.centrar_ventana(form_window)
-                
-    #             años = [str(year) for year in range(1995, 2031)]
-
-    #             ctk.CTkLabel(form_window, text="Marca", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
-    #             marca = ctk.CTkEntry(form_window)
-    #             marca.grid(row=0, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Modelo", fg_color='#2b2b2b', text_color='white').grid(row=1, column=0, padx=10, pady=10)
-    #             modelo = ctk.CTkEntry(form_window)
-    #             modelo.grid(row=1, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Año", fg_color='#2b2b2b', text_color='white').grid(row=2, column=0, padx=10, pady=10)
-    #             año = ttk.Combobox(form_window, values=años, state="readonly")
-    #             año.grid(row=2, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Patente", fg_color='#2b2b2b', text_color='white').grid(row=3, column=0, padx=10, pady=10)
-    #             patente = ctk.CTkEntry(form_window)
-    #             patente.grid(row=3, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Compañia", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
-    #             compañia = ttk.Combobox(form_window)
-    #             compañia.grid(row=4, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
-    #             tVehiculo = ctk.CTkEntry(form_window)
-    #             tVehiculo.grid(row=5, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Categoria Seguro", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
-    #             categoria = ctk.CTkEntry(form_window)
-    #             categoria.grid(row=6, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Accesorios", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
-    #             categoria = ctk.CTkEntry(form_window)
-    #             categoria.grid(row=7, column=1, padx=10, pady=10)
-                
-    #             ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=8, column=0, padx=10, pady=10)
-    #             fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
-    #             fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
-                
-                
-    #             boton_guardar = ctk.CTkButton(form_window, text="GUARDAR", fg_color='green', font=('Arial', 18))
-    #             boton_guardar.grid(row=10, column=0, padx=10, pady=10)
-        
-    #     else:
-    #         messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")
-    
-
-
 
     def open_add_client_window(self):
         self.client_form_window("Agregar Cliente", None)
@@ -396,8 +327,6 @@ class ClientesView:
             messagebox.showerror("Error", f"Ocurrió un error al crear el cliente: {str(e)}")
 
 
-
-
     def editar_cliente(self, client_id, form_window, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia):
         """Edita un cliente existente y actualiza sus datos, incluyendo las fotos opcionales."""
         if not nombre or not apellido or not dni or not email or not telefono:
@@ -477,8 +406,6 @@ class ClientesView:
         for cliente in resultados:
             # Insertar el cliente encontrado en el Treeview
             self.tree.insert('', 'end', values=cliente)
-
-
 
     
     def habilitar_cliente(self):
