@@ -37,13 +37,17 @@ class ClienteModel:
             # Obtener los datos actuales del cliente
             cliente_actual = self.obtener_cliente_por_id(client_id)
 
+            if dni_foto == None:
+                dni_foto = cliente_actual[10]
+
+            if foto_licencia == None:
+                foto_licencia = cliente_actual[11]
+
             if not cliente_actual:
                 print(f"No se encontró el cliente con ID {client_id}.")
                 return
 
-            # Usar las imágenes actuales si no se proporcionan nuevas
-            dni_foto_bytes = self.convertir_imagen_a_bytes(dni_foto) if isinstance(dni_foto, Image.Image) else cliente_actual[10]  # Índice correspondiente
-            foto_licencia_bytes = self.convertir_imagen_a_bytes(foto_licencia) if isinstance(foto_licencia, Image.Image) else cliente_actual[11]  # Índice correspondiente
+           
 
             # Query para actualizar los datos del cliente
             query = """
@@ -55,7 +59,7 @@ class ClienteModel:
             """
             params = (
                 nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, 
-                domicilio, vencimiento_licencia, dni_foto_bytes, foto_licencia_bytes, client_id
+                domicilio, vencimiento_licencia, dni_foto, foto_licencia, client_id
             )
             self.db_connection.execute_query(query, params)
             print("Cliente editado con éxito, incluyendo imágenes.")

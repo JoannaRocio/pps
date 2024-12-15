@@ -397,13 +397,10 @@ class ClientesView:
             return
 
         try:
-            # Convertir las imágenes a bytes si son objetos Image
+            
+             # Convertir las imágenes a bytes si son objetos Image
             dni_foto_bytes = self.cliente_model.convertir_imagen_a_bytes(dni_foto) if isinstance(dni_foto, Image.Image) else dni_foto
             foto_licencia_bytes = self.cliente_model.convertir_imagen_a_bytes(foto_licencia) if isinstance(foto_licencia, Image.Image) else foto_licencia
-
-            # Verificar si las fotos fueron proporcionadas
-            dni_foto = dni_foto_bytes if dni_foto else None
-            foto_licencia = foto_licencia_bytes if foto_licencia else None
 
             # Llamar a la función de editar del modelo para actualizar el cliente
             self.cliente_model.editar_cliente(
@@ -417,8 +414,8 @@ class ClientesView:
                 cp=cp,
                 domicilio=domicilio,
                 vencimiento_licencia=vencimiento_licencia,
-                dni_foto=dni_foto,
-                foto_licencia=foto_licencia,
+                dni_foto=dni_foto_bytes,
+                foto_licencia=foto_licencia_bytes,
             )
             messagebox.showinfo("Éxito", "Cliente actualizado exitosamente.")  # Mostrar mensaje siempre al editar
 
