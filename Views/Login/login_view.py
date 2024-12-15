@@ -41,10 +41,11 @@ class UsuarioView:
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-
+        self.root.destroy()
         if self.usuario_model.verificar_credenciales(username, password):
-            self.root.destroy() # Cierra la ventana de login
-            self.on_login_success()  # Llama a la función de éxito
+            pass
+            #self.root.destroy() # Cierra la ventana de login
+            #self.on_login_success()  # Llama a la función de éxito
             # self.root.destroy()  # Cierra la ventana de login
         else:
             messagebox.showerror("Error", "Credenciales incorrectas.")

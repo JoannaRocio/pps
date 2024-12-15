@@ -223,7 +223,7 @@ class ClientesView:
                 patente.grid(row=3, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Compañia", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
-                compañia = ctk.CTkEntry(form_window)
+                compañia = ttk.Combobox(form_window)
                 compañia.grid(row=4, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
@@ -234,21 +234,14 @@ class ClientesView:
                 categoria = ctk.CTkEntry(form_window)
                 categoria.grid(row=6, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
+                ctk.CTkLabel(form_window, text="Accesorios", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
+                categoria = ctk.CTkEntry(form_window)
+                categoria.grid(row=7, column=1, padx=10, pady=10)
+                
+                ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=8, column=0, padx=10, pady=10)
                 fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
-                fecha_poliza.grid(row=7, column=1, padx=10, pady=10)
+                fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
                 
-                boton_guardar = ctk.CTkButton(form_window, text="Foto de frente", fg_color='#0000FF', font=('Arial', 18))
-                boton_guardar.grid(row=8, column=0, padx=10, pady=10)
-                
-                boton_guardar = ctk.CTkButton(form_window, text="foto parte trasera", fg_color='#0000FF', font=('Arial', 18))
-                boton_guardar.grid(row=8, column=1, padx=10, pady=10)
-                
-                boton_guardar = ctk.CTkButton(form_window, text="latereal izq", fg_color='#0000FF', font=('Arial', 18))
-                boton_guardar.grid(row=9, column=0, padx=10, pady=10)
-                
-                boton_guardar = ctk.CTkButton(form_window, text="laterarl der", fg_color='#0000FF', font=('Arial', 18))
-                boton_guardar.grid(row=9, column=1, padx=10, pady=10)
                 
                 boton_guardar = ctk.CTkButton(form_window, text="GUARDAR", fg_color='green', font=('Arial', 18))
                 boton_guardar.grid(row=10, column=0, padx=10, pady=10)
