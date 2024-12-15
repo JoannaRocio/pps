@@ -58,20 +58,8 @@ def main():
 
         # Crear la ventana principal
         root = ctk.CTk()
-
-        # Crear una instancia del modelo de usuario
         usuario_model = UsuarioModel()
-        # Crear una instancia del login y esperar a que se loguee correctamente
-        
-        # despues descomentar esto asi inicia el login
         login_view = UsuarioView(root, usuario_model, on_login_success)
-        
-        # despues borrar esto
-        # cliente_model = 1
-        # app = HomeView(root, cliente_model)id
-        # borrar lo que hay entre medio
-        
-        
         root.mainloop()  # Ejecutar la vista de login
 
     except Exception as e:
