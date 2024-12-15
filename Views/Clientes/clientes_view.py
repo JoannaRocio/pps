@@ -9,6 +9,7 @@ from PIL import ImageTk
 from tkinter import filedialog
 from Views.Home.home_view import HomeView
 
+
 class ClientesView:
     def __init__(self, root, cliente_model, compania_model, vencimiento_model, vehiculo_model, siniestros_model, volver_menu_callback):
         self.root = root
@@ -38,12 +39,13 @@ class ClientesView:
         back_button = ctk.CTkButton(self.main_frame, text="Volver", command=self.volver_menu, fg_color='#3b3b3b', font=('Arial', 18))
         back_button.grid(row=0, column=0, padx=20, pady=20, sticky='ne')
         
+      
         # Campo de búsqueda
         self.search_var = ctk.StringVar()
-        search_entry = ctk.CTkEntry(self.main_frame, textvariable=self.search_var, placeholder_text="Buscar cliente")
-        search_entry.grid(row=1, column=0, padx=20, pady=10, columnspan=3, sticky="ew")
+        self.search_entry = ctk.CTkEntry(self.main_frame, textvariable=self.search_var, placeholder_text="Buscar cliente")
+        self.search_entry.grid(row=1, column=0, padx=20, pady=10, columnspan=3, sticky="ew")
 
-        search_button = ctk.CTkButton(self.main_frame, text="🔍", command=self.search_clients, fg_color='#3b3b3b', font=('Arial', 18))
+        search_button = ctk.CTkButton(self.main_frame, text="🔍", command=self.buscar_clientes, fg_color='#3b3b3b', font=('Arial', 18))
         search_button.grid(row=1, column=3, padx=20, pady=10)
 
         # Tabla para mostrar los clientes
@@ -459,14 +461,22 @@ class ClientesView:
         imagen.save(byte_io, format="JPEG")
         return byte_io.getvalue()
     
-    
-    def search_clients(self):
-        search_term = self.search_var.get().lower()
-        self.tree.delete(*self.tree.get_children())
-        clientes = self.cliente_model.obtener_clientes()
-        for cliente in clientes:
-            if search_term in cliente[0].lower() or search_term in cliente[1].lower():
-                self.tree.insert('', 'end', values=cliente)
+
+    def buscar_clientes(self):
+        search_term = self.search_entry.get().lower()
+        # Limpiar el Treeview antes de insertar nuevos resultados
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        
+        # Llamar al método buscar_clientes pasando el término de búsqueda
+        resultados = self.cliente_model.buscar_clientes(search_term)
+        
+        for cliente in resultados:
+            # Insertar el cliente encontrado en el Treeview
+            self.tree.insert('', 'end', values=cliente)
+
+
+
     
     def habilitar_cliente(self):
         selected_item = self.tree.selection()

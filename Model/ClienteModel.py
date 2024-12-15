@@ -73,17 +73,19 @@ class ClienteModel:
         except Exception as e:
             print(f"Error al deshabilitar cliente: {str(e)}")
 
+        
     def buscar_clientes(self, search_query):
-        """Busca clientes activos por nombre o apellido."""
         try:
-            query = """SELECT nombre, apellido 
-                       FROM clientes 
-                       WHERE estado = 'activo' AND (nombre LIKE %s OR apellido LIKE %s)"""
-            params = (f'%{search_query}%', f'%{search_query}%')
+            query = """SELECT id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia 
+                    FROM clientes 
+                    WHERE estado = 'activo' AND (nombre LIKE %s OR apellido LIKE %s OR dni LIKE %s)"""
+            params = (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%')
             return self.db_connection.fetch_data(query, params)
         except Exception as e:
             print(f"Error al buscar clientes: {str(e)}")
             return []
+
+
 
     def agregar_cliente(self, nombre, apellido, dni, email, telefono, fecha_nacimiento, 
                         cp, domicilio, vencimiento_licencia="2000-02-03", dni_foto=None, 
