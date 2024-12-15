@@ -109,15 +109,6 @@ class CompaniaModel:
         except Exception as e:
             print(f"Error al editar cliente: {str(e)}")
 
-    def eliminar_cliente(self, client_id):
-        try:
-            query = "DELETE FROM clientes WHERE id = %s"
-            params = (client_id,)
-            self.db_connection.execute_query(query, params)
-            print("Cliente eliminado con éxito")
-        except Exception as e:
-            print(f"Error al eliminar cliente: {str(e)}")
-
     def buscar_clientes(self, search_query):
         try:
             query = "SELECT nombre, apellido WHERE nombre LIKE %s OR apellido LIKE %s"

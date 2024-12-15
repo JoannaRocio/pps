@@ -7,14 +7,11 @@ class ClienteModel:
         self.db_connection = db_connection
 
     def obtener_clientes(self):
-        """Obtiene todos los clientes activos con datos básicos."""
         try:
-            query = """SELECT id, nombre, apellido, dni, email, telefono, 
-                              fecha_nacimiento, cp, domicilio, vencimiento_licencia 
-                       FROM clientes WHERE estado = 'activo'"""
+            query = "SELECT id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, estado FROM clientes"
             return self.db_connection.fetch_data(query)
         except Exception as e:
-            print(f"Error al obtener clientes: {str(e)}")
+            print(f"Error al obtener compañías: {str(e)}")
             return []
 
     def obtener_cliente_por_id(self, client_id):
@@ -113,3 +110,21 @@ class ClienteModel:
         except Exception as e:
             print(f"Error al convertir imagen: {str(e)}")
             return None
+    
+    def deshabilitar_cliente(self, client_id):
+        try:
+            query = "UPDATE clientes SET estado = 'inactivo' WHERE id = %s"
+            params = (client_id,)
+            self.db_connection.execute_query(query, params)
+            print("Cliente deshabilitado con éxito")
+        except Exception as e:
+            print(f"Error al deshabilitar cliente: {str(e)}")
+    
+    def habilitar_cliente(self, client_id):
+        try:
+            query = "UPDATE clientes SET estado = 'activo' WHERE id = %s"
+            params = (client_id,)
+            self.db_connection.execute_query(query, params)
+            print("Cliente habilitado con éxito")
+        except Exception as e:
+            print(f"Error al habilitar cliente: {str(e)}")

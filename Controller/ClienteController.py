@@ -9,4 +9,4 @@ class ClienteController:
 
     def mostrar_vista_clientes(self):
         # Aquí puedes realizar cualquier configuración adicional necesaria
-       self.clientes_view.load_clients()  # Cargar los clientes en la vista al iniciar
+       self.clientes_view.obtener_clientes()  # Cargar los clientes en la vista al iniciar
