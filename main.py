@@ -7,7 +7,6 @@ from Model.UsuarioModel import UsuarioModel
 from Model.VencimientosModel import VencimientosModel
 from Model.vehiculo_model import VehiculoModel
 from db.db_connection import DatabaseConnection
-# from Views.Clientes.clientes_view import ClientesView
 from Views.Login.login_view import UsuarioView
 from Views.Home.home_view import HomeView
 
