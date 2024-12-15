@@ -8,7 +8,7 @@ from PIL import Image
 from PIL import ImageTk
 from tkinter import filedialog
 from Views.Home.home_view import HomeView
-
+from Views.Vehiculos.vehiculos_view import VehiculosView
 
 class ClientesView:
     def __init__(self, root, cliente_model, compania_model, vencimiento_model, vehiculo_model, siniestros_model, volver_menu_callback):
@@ -22,7 +22,8 @@ class ClientesView:
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
         self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
-
+        self.vehiculos_view = VehiculosView(self.root, self.cliente_model, self.vehiculo_model)
+        
         self.root.geometry("1280x600")
         self.root.title("Gestión de Clientes")
         self.root.config(bg='#2b2b2b')
@@ -73,7 +74,7 @@ class ClientesView:
         btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.open_edit_client_window, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=2, padx=20, pady=10)
         
-        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_ve, fg_color='#3b3b3b', font=('Arial', 18))
         boton_carga.grid(row=3, column=3, padx=20, pady=10)
 
         btn_disable = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.deshabilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
@@ -90,6 +91,18 @@ class ClientesView:
         # Cargar los clientes al inicio
         self.obtener_clientes()
 
+    def cargar_ve(self):
+        cli_seleccionado = self.tree.selection()
+        if cli_seleccionado:
+            client_id = self.tree.item(cli_seleccionado, 'values')[0]  
+            cliente = self.cliente_model.obtener_cliente_por_id(client_id)
+
+            if cliente:
+                self.vehiculos_view.abrir_ventana_vehiculo()
+        else:
+            messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")      
+
+    
     def volver_menu(self):
         self.main_frame.pack_forget()  # Oculta el marco actual
         self.main_frame = None  # Limpia la referencia al marco actual
@@ -186,68 +199,68 @@ class ClientesView:
         licencia_label.image = licencia_photo
         licencia_label.pack(pady=10)
 
-
-    def abrir_ventana_vehiculo(self):
-        self.cargar_vehiculo("Agregar Vehiculo")
+    
+    # def abrir_ventana_vehiculo(self):
+    #     self.cargar_vehiculo("Agregar Vehiculo")
     
     
-    def cargar_vehiculo(self):
-        cli_seleccionado = self.tree.selection()
-        if cli_seleccionado:
-            client_id = self.tree.item(cli_seleccionado, 'values')[0]  
-            cliente = self.cliente_model.obtener_cliente_por_id(client_id)
+    # def cargar_vehiculo(self):
+    #     cli_seleccionado = self.tree.selection()
+    #     if cli_seleccionado:
+    #         client_id = self.tree.item(cli_seleccionado, 'values')[0]  
+    #         cliente = self.cliente_model.obtener_cliente_por_id(client_id)
 
-            if cliente:
-                form_window = Toplevel(self.root)
-                form_window.title("Agregar Vehiculo")
-                form_window.config(bg='#2b2b2b') 
+    #         if cliente:
+    #             form_window = Toplevel(self.root)
+    #             form_window.title("Agregar Vehiculo")
+    #             form_window.config(bg='#2b2b2b') 
                 
-                self.centrar_ventana(form_window)
+    #             self.centrar_ventana(form_window)
                 
-                años = [str(year) for year in range(1995, 2031)]
+    #             años = [str(year) for year in range(1995, 2031)]
 
-                ctk.CTkLabel(form_window, text="Marca", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
-                marca = ctk.CTkEntry(form_window)
-                marca.grid(row=0, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Marca", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
+    #             marca = ctk.CTkEntry(form_window)
+    #             marca.grid(row=0, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Modelo", fg_color='#2b2b2b', text_color='white').grid(row=1, column=0, padx=10, pady=10)
-                modelo = ctk.CTkEntry(form_window)
-                modelo.grid(row=1, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Modelo", fg_color='#2b2b2b', text_color='white').grid(row=1, column=0, padx=10, pady=10)
+    #             modelo = ctk.CTkEntry(form_window)
+    #             modelo.grid(row=1, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Año", fg_color='#2b2b2b', text_color='white').grid(row=2, column=0, padx=10, pady=10)
-                año = ttk.Combobox(form_window, values=años, state="readonly")
-                año.grid(row=2, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Año", fg_color='#2b2b2b', text_color='white').grid(row=2, column=0, padx=10, pady=10)
+    #             año = ttk.Combobox(form_window, values=años, state="readonly")
+    #             año.grid(row=2, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Patente", fg_color='#2b2b2b', text_color='white').grid(row=3, column=0, padx=10, pady=10)
-                patente = ctk.CTkEntry(form_window)
-                patente.grid(row=3, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Patente", fg_color='#2b2b2b', text_color='white').grid(row=3, column=0, padx=10, pady=10)
+    #             patente = ctk.CTkEntry(form_window)
+    #             patente.grid(row=3, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Compañia", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
-                compañia = ttk.Combobox(form_window)
-                compañia.grid(row=4, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Compañia", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
+    #             compañia = ttk.Combobox(form_window)
+    #             compañia.grid(row=4, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
-                tVehiculo = ctk.CTkEntry(form_window)
-                tVehiculo.grid(row=5, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
+    #             tVehiculo = ctk.CTkEntry(form_window)
+    #             tVehiculo.grid(row=5, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Categoria Seguro", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
-                categoria = ctk.CTkEntry(form_window)
-                categoria.grid(row=6, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Categoria Seguro", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
+    #             categoria = ctk.CTkEntry(form_window)
+    #             categoria.grid(row=6, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Accesorios", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
-                categoria = ctk.CTkEntry(form_window)
-                categoria.grid(row=7, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Accesorios", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
+    #             categoria = ctk.CTkEntry(form_window)
+    #             categoria.grid(row=7, column=1, padx=10, pady=10)
                 
-                ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=8, column=0, padx=10, pady=10)
-                fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
-                fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
+    #             ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=8, column=0, padx=10, pady=10)
+    #             fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+    #             fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
                 
                 
-                boton_guardar = ctk.CTkButton(form_window, text="GUARDAR", fg_color='green', font=('Arial', 18))
-                boton_guardar.grid(row=10, column=0, padx=10, pady=10)
+    #             boton_guardar = ctk.CTkButton(form_window, text="GUARDAR", fg_color='green', font=('Arial', 18))
+    #             boton_guardar.grid(row=10, column=0, padx=10, pady=10)
         
-        else:
-            messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")
+    #     else:
+    #         messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")
     
 
 
