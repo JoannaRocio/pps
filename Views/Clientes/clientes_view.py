@@ -74,8 +74,11 @@ class ClientesView:
         boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
         boton_carga.grid(row=3, column=3, padx=20, pady=10)
 
-        btn_delete = ctk.CTkButton(self.main_frame, text="Eliminar Cliente", command=self.delete_client, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_delete.grid(row=3, column=4, padx=20, pady=10)
+        btn_disable = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.deshabilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_disable.grid(row=3, column=2, padx=20, pady=10)
+
+        btn_enable = ctk.CTkButton(self.main_frame, text="Habilitar", command=self.habilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_enable.grid(row=3, column=3, padx=20, pady=10)
 
         # Configuración del estiramiento de las columnas
         self.main_frame.grid_rowconfigure(2, weight=1)
@@ -83,7 +86,7 @@ class ClientesView:
             self.main_frame.grid_columnconfigure(i, weight=1)
 
         # Cargar los clientes al inicio
-        self.load_clients()
+        self.obtener_clientes()
 
     def volver_menu(self):
         self.main_frame.pack_forget()  # Oculta el marco actual
@@ -92,11 +95,16 @@ class ClientesView:
         # Crea y muestra la vista del HomeView en la misma ventana
         menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model)
 
-    def load_clients(self):
-        self.tree.delete(*self.tree.get_children())  # Limpiar la tabla
-        clientes = self.cliente_model.obtener_clientes()  # Asegúrate de que este método retorna clientes ordenados
-        for cliente in sorted(clientes, key=lambda x: (x[1])):  # Ordenar por nombre y apellido
-            self.tree.insert('', 'end', values=cliente)
+    def obtener_clientes(self):
+        self.tree.delete(*self.tree.get_children())
+        
+        self.tree.tag_configure('deshabilitado', background='red', foreground='white')
+        self.tree.tag_configure('habilitado', background='white', foreground='black')
+
+        clientes = self.cliente_model.obtener_clientes()
+        for cliente in clientes:
+            estado = 'deshabilitado' if cliente[10] == 'inactivo' else 'habilitado'
+            self.tree.insert('', 'end', values=cliente[:10], tags=(estado,))
 
 
     def centrar_ventana(self, ventana):
@@ -374,7 +382,7 @@ class ClientesView:
                 messagebox.showinfo("Éxito", "Cliente agregado exitosamente.")
 
             form_window.destroy()  # Cerrar ventana
-            self.load_clients()  # Recargar clientes
+            self.obtener_clientes()  # Recargar clientes
 
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error al crear el cliente: {str(e)}")
@@ -415,7 +423,7 @@ class ClientesView:
             messagebox.showinfo("Éxito", "Cliente actualizado exitosamente.")  # Mostrar mensaje siempre al editar
 
             form_window.destroy()  # Cerrar ventana
-            self.load_clients()  # Recargar clientes
+            self.obtener_clientes()  # Recargar clientes
 
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error al editar el cliente: {str(e)}")
@@ -459,13 +467,25 @@ class ClientesView:
         for cliente in clientes:
             if search_term in cliente[0].lower() or search_term in cliente[1].lower():
                 self.tree.insert('', 'end', values=cliente)
-                
-    def delete_client(self):
+    
+    def habilitar_cliente(self):
         selected_item = self.tree.selection()
         if selected_item:
             client_id = self.tree.item(selected_item, 'values')[0]
-            self.cliente_model.eliminar_cliente(client_id)
-            self.load_clients()
-            messagebox.showinfo("Éxito", "Cliente eliminado correctamente.")
+            self.cliente_model.habilitar_cliente(client_id)
+            self.obtener_clientes()
+            messagebox.showinfo("Éxito", "Cliente habilitado correctamente.")
         else:
-            messagebox.showwarning("Advertencia", "Seleccione un cliente para eliminar.")
+            messagebox.showwarning("Advertencia", "Seleccione una compañía para habilitar.")
+
+
+    def deshabilitar_cliente(self):     
+        selected_item = self.tree.selection()
+        if selected_item:
+            client_id = self.tree.item(selected_item, 'values')[0]
+            self.cliente_model.deshabilitar_cliente(client_id)
+            self.obtener_clientes()
+            messagebox.showinfo("Éxito", "Cliente deshabilitado correctamente.")
+        else:
+            messagebox.showwarning("Advertencia", "Seleccione un cliente para deshabilitar.")
+                
