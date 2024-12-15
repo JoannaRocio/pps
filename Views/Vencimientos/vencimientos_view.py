@@ -42,7 +42,7 @@ class VencimientosView:
         search_button.grid(row=1, column=3, padx=20, pady=10)
         
         # Creamos la tabla de vencimientos (Treeview)
-        self.treeview = ttk.Treeview(self.main_frame, columns=("Nombre", "Apellido", "Patente", "Fecha de Licencia", "Fecha de Póliza"), show="headings")
+        self.treeview = ttk.Treeview(self.main_frame, columns=("Nombre", "Apellido", "Patente", "Fecha de Licencia", "Fecha de Póliza" , "Compania"), show="headings")
         
         # Configuramos las columnas
         self.treeview.heading("Nombre", text="Nombre")
@@ -50,6 +50,7 @@ class VencimientosView:
         self.treeview.heading("Patente", text="Patente")
         self.treeview.heading("Fecha de Licencia", text="Fecha de Licencia")
         self.treeview.heading("Fecha de Póliza", text="Fecha de Póliza")
+        self.treeview.heading("Compania", text="Compania")
         
         self.treeview.grid(row=2, column=0, columnspan=5, padx=20, pady=20, sticky="nsew")
 
