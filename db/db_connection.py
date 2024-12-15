@@ -5,10 +5,9 @@ class DatabaseConnection:
     def __init__(self):
         self.host = 'localhost'  # Cambiar por la dirección de tu servidor MySQL
         self.database = 'gestion_seguros'
-        # self.user = 'root'
         self.user = 'root'
-        self.password = '1234'
-        self.port = 8000
+        self.password = '1920'
+        self.port = 3306
         self.connection = None
 
     def connect(self):
@@ -21,7 +20,7 @@ class DatabaseConnection:
                 database=self.database,
                 user=self.user,
                 password=self.password,
-               #port=self.port
+                port=self.port
             )
             if self.connection.is_connected():
                 print("Conexión exitosa a la base de datos")
@@ -36,6 +35,10 @@ class DatabaseConnection:
         :param query: Consulta SQL a ejecutar.
         :param params: Parámetros opcionales para la consulta.
         """
+        if not self.connection or not self.connection.is_connected():
+            print("No hay conexión a la base de datos.")
+            return
+
         cursor = None
         try:
             cursor = self.connection.cursor()
@@ -55,6 +58,10 @@ class DatabaseConnection:
         :param params: Parámetros opcionales para la consulta.
         :return: Resultados de la consulta.
         """
+        if not self.connection or not self.connection.is_connected():
+            print("No hay conexión a la base de datos.")
+            return None
+
         cursor = None
         try:
             cursor = self.connection.cursor()
@@ -74,3 +81,5 @@ class DatabaseConnection:
         if self.connection and self.connection.is_connected():
             self.connection.close()
             print("Conexión cerrada")
+
+  

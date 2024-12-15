@@ -1,5 +1,5 @@
-from CompaniaModel import CompaniaModel
-from CompaniasView import CompaniasView
+from Model.CompaniaModel import CompaniaModel
+from Views.Companias.companias_view import CompaniasView
 
 
 class CompaniaController:

@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import ttk, Toplevel
 from tkcalendar import DateEntry
 from Views.Home.home_view import HomeView
+from Model.CompaniaModel import CompaniaModel
 
 class CompaniasView:
     def __init__(self, root, cliente_model, compania_model, siniestros_model, vehiculo_model, vencimiento_model, volver_menu_callback):

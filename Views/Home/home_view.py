@@ -79,8 +79,11 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de companias
-        self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model , self.volver_menu)
-        
+        #self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model , self.volver_menu)
+        # Al reinstanciar la vista de compañías:
+        self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model, self.volver_menu)
+
+
         # Muestra el marco de CompaniasView
         self.companias_view.main_frame.pack(fill="both", expand=True)
         
@@ -109,21 +112,29 @@ class HomeView:
         self.clientes_view.main_frame.pack(fill="both", expand=True)
         
     def volver_menu(self):
-        if self.clientes_view:  # Verifica si clientes_view existe
-            self.clientes_view.main_frame.pack_forget()  # Oculta la vista de clientes
-            self.clientes_view = None  # Limpia la referencia a ClientesView
-        if self.companias_view:  # Verifica si clientes_view existe
-            self.companias_view.main_frame.pack_forget()  # Oculta la vista de clientes
-            self.companias_view = None  # Limpia la referencia a ClientesView
-        if self.siniestros_view:  # Verifica si clientes_view existe
-            self.siniestros_view.main_frame.pack_forget()  # Oculta la vista de clientes
-            self.siniestros_view = None  # Limpia la referencia a ClientesView
-        if self.vencimientos_view:  # Verifica si clientes_view existe
-            self.vencimientos_view.main_frame.pack_forget()  # Oculta la vista de clientes
-            self.vencimientos_view = None  # Limpia la referencia a ClientesView
-        # Muestra el marco principal de HomeView
+        if self.clientes_view:
+            self.clientes_view.main_frame.pack_forget()  # Ocultar vista de clientes
+        if self.companias_view:
+            self.companias_view.main_frame.pack_forget()  # Ocultar vista de compañías
+        if self.siniestros_view:
+            self.siniestros_view.main_frame.pack_forget()  # Ocultar vista de siniestros
+        if self.vencimientos_view:
+            self.vencimientos_view.main_frame.pack_forget()  # Ocultar vista de vencimientos
+
+        # Mostrar el menú principal de HomeView
         self.main_frame.pack(fill="both", expand=True)
-        
+
+        # Si la vista de compañías no ha sido creada, la creamos de nuevo
+        if not self.companias_view:  
+            print("Reinstanciando la vista de CompaniasView.")
+            from Views.Companias.companias_view import CompaniasView
+            # Al reinstanciar la vista de compañías:
+            self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model, self.volver_menu)
+
+
+    
+    
+
 
     # Función para cerrar sesión
     def cerrar_sesion(self):
