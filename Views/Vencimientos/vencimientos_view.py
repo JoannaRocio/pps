@@ -110,7 +110,7 @@ class VencimientosView:
         self.main_frame = None
         menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model)
 
-
+#h
 if __name__ == "__main__":
     root = ctk.CTk()
     cliente_model = None  
