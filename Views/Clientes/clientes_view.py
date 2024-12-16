@@ -23,7 +23,7 @@ class ClientesView:
         self.siniestros_model = siniestros_model
         self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
         self.vehiculos_view = VehiculosView(self.root, self.cliente_model, self.vehiculo_model)
-        
+
         self.root.geometry("1280x600")
         self.root.title("Gestión de Clientes")
         self.root.config(bg='#2b2b2b')
@@ -65,13 +65,13 @@ class ClientesView:
         self.tree.grid(row=2, column=0, columnspan=9, padx=20, pady=10, sticky='nsew')
 
         # Botones de funcionalidad
-        btn_view = ctk.CTkButton(self.main_frame, text="Ver Cliente", command=self.view_client, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_view = ctk.CTkButton(self.main_frame, text="Ver Cliente", command=self.ver_cliente, fg_color='#3b3b3b', font=('Arial', 18))
         btn_view.grid(row=3, column=0, padx=20, pady=10)
 
-        btn_add = ctk.CTkButton(self.main_frame, text="Agregar Cliente", command=self.open_add_client_window, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_add = ctk.CTkButton(self.main_frame, text="Agregar Cliente", command=self.ventana_agregar, fg_color='#3b3b3b', font=('Arial', 18))
         btn_add.grid(row=3, column=1, padx=20, pady=10)
 
-        btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.open_edit_client_window, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.ventana_editar, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=2, padx=20, pady=10)
         
         boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
@@ -121,6 +121,7 @@ class ClientesView:
             estado = 'deshabilitado' if cliente[10] == 'inactivo' else 'habilitado'
             self.tree.insert('', 'end', values=cliente[:10], tags=(estado,))
 
+
     def centrar_ventana(self, ventana):
         # Obtener las dimensiones de la pantalla
         ancho_pantalla = ventana.winfo_screenwidth()
@@ -137,7 +138,8 @@ class ClientesView:
         # Posicionar la ventana en el centro
         ventana.geometry(f'{ancho_ventana}x{altura_ventana}+{x}+{y}')
 
-    def view_client(self):
+
+    def ver_cliente(self):
         selected_item = self.tree.selection()
         if selected_item:
             client_id = self.tree.item(selected_item, 'values')[0]  
@@ -176,7 +178,6 @@ class ClientesView:
         foto_dni_window.config(bg='#2b2b2b')
 
         dni_image = Image.open(BytesIO(foto_dni_bytes))
-        dni_image = dni_image.resize((300, 300)) 
         dni_photo = ImageTk.PhotoImage(dni_image)
 
         dni_label = ctk.CTkLabel(foto_dni_window, image=dni_photo)
@@ -189,29 +190,30 @@ class ClientesView:
         foto_licencia_window.config(bg='#2b2b2b')
 
         licencia_image = Image.open(BytesIO(foto_licencia_bytes))
-        licencia_image = licencia_image.resize((300, 300))
         licencia_photo = ImageTk.PhotoImage(licencia_image)
 
         licencia_label = ctk.CTkLabel(foto_licencia_window, image=licencia_photo)
         licencia_label.image = licencia_photo
         licencia_label.pack(pady=10)
 
-    def open_add_client_window(self):
-        self.client_form_window("Agregar Cliente", None)
-
-    def open_edit_client_window(self):
+    def ventana_agregar(self):
+        self.ventana_cliente("Agregar Cliente", None)
+        
+    def ventana_editar(self):
         selected_item = self.tree.selection()
         if selected_item:
-            client_id = self.tree.item(selected_item, 'values')[0]  # Cambiado de 'id_cliente' a 'id'
-            self.client_form_window("Editar Cliente", client_id)
+            client_id = self.tree.item(selected_item, 'values')[0]
+            self.ventana_cliente("Editar Cliente", client_id)
         else:
             messagebox.showwarning("Advertencia", "Seleccione un cliente para editar.")
 
-    def client_form_window(self, title, client_id):
+    def ventana_cliente(self, title, client_id):
         form_window = Toplevel(self.root)
         form_window.title(title)
         form_window.config(bg='#2b2b2b') 
         self.centrar_ventana(form_window)
+        form_window.grab_set()
+        
         # Campos del formulario (sin cambios)
         ctk.CTkLabel(form_window, text="Nombre", fg_color='#2b2b2b', text_color='white').grid(row=0, column=0, padx=10, pady=10)
         nombre = ctk.CTkEntry(form_window)
@@ -250,12 +252,17 @@ class ClientesView:
         vencimiento_licencia.grid(row=8, column=1, padx=10, pady=10)
 
         # Botones para cargar imágenes de DNI y Licencia
-        dni_foto_button = ctk.CTkButton(form_window, text="Cargar Foto DNI", command=self.cargar_dni_foto)
+        dni_foto_button = ctk.CTkButton(
+            form_window, text="Cargar Foto DNI", 
+            command=lambda: self.cargar_dni_foto(form_window)
+        )
         dni_foto_button.grid(row=9, column=0, padx=10, pady=10)
 
-        licencia_foto_button = ctk.CTkButton(form_window, text="Cargar Foto Licencia", command=self.cargar_foto_licencia)
+        licencia_foto_button = ctk.CTkButton(
+            form_window, text="Cargar Foto Licencia", 
+            command=lambda: self.cargar_foto_licencia(form_window)
+        )
         licencia_foto_button.grid(row=9, column=1, padx=10, pady=10)
-
 
         # Verificar si estamos editando un cliente existente (si client_id está disponible)
         if client_id:
@@ -327,6 +334,8 @@ class ClientesView:
             messagebox.showerror("Error", f"Ocurrió un error al crear el cliente: {str(e)}")
 
 
+
+
     def editar_cliente(self, client_id, form_window, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia):
         """Edita un cliente existente y actualiza sus datos, incluyendo las fotos opcionales."""
         if not nombre or not apellido or not dni or not email or not telefono:
@@ -372,27 +381,27 @@ class ClientesView:
         return None
     
     
-    def cargar_dni_foto(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
-        if file_path:
-            self.dni_foto = Image.open(file_path)
-            
-            if self.dni_foto.mode != 'RGB':
-                self.dni_foto = self.dni_foto.convert('RGB')
+    def cargar_dni_foto(self, form_window):
+        try:
+            file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+            if file_path:
+                self.dni_foto = Image.open(file_path)
+                if self.dni_foto.mode != 'RGB':
+                    self.dni_foto = self.dni_foto.convert('RGB')
+                messagebox.showinfo("Éxito", "Foto de DNI cargada correctamente.", parent=form_window)
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo cargar la imagen: {e}", parent=form_window)
 
-    def cargar_foto_licencia(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
-        if file_path:
-            self.foto_licencia = Image.open(file_path)
-           
-            if self.foto_licencia.mode != 'RGB':
-                self.foto_licencia = self.foto_licencia.convert('RGB')
-
-    def convertir_imagen_a_bytes(self, imagen):
-        byte_io = BytesIO()
-        imagen.save(byte_io, format="JPEG")
-        return byte_io.getvalue()
-    
+    def cargar_foto_licencia(self, form_window):
+        try:
+            file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+            if file_path:
+                self.foto_licencia = Image.open(file_path)
+                if self.foto_licencia.mode != 'RGB':
+                    self.foto_licencia = self.foto_licencia.convert('RGB')
+                messagebox.showinfo("Éxito", "Foto de Licencia cargada correctamente.", parent=form_window)
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo cargar la imagen: {e}", parent=form_window)
 
     def buscar_clientes(self):
         search_term = self.search_entry.get().lower()
@@ -406,7 +415,6 @@ class ClientesView:
         for cliente in resultados:
             # Insertar el cliente encontrado en el Treeview
             self.tree.insert('', 'end', values=cliente)
-
     
     def habilitar_cliente(self):
         selected_item = self.tree.selection()
