@@ -10,7 +10,8 @@ class VehiculosView:
         self.root = root
         self.cliente_model = cliente_model
         self.vehiculo_model = vehiculo_model
-    
+        self.nombres_companias = self.vehiculo_model.obtener_compania()
+        
     def abrir_ventana_vehiculo(self):
         self.cargar_vehiculo("Agregar Vehiculo")
         
@@ -36,6 +37,7 @@ class VehiculosView:
                 form_window.title(titulo)
                 form_window.config(bg='#2b2b2b') 
                 
+                
                 self.centrar_ventana(form_window)
                 
                 años = [str(year) for year in range(1995, 2031)]
@@ -57,7 +59,7 @@ class VehiculosView:
                 patente.grid(row=3, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Compañia", fg_color='#2b2b2b', text_color='white').grid(row=4, column=0, padx=10, pady=10)
-                compañia = ttk.Combobox(form_window)
+                compañia = ttk.Combobox(form_window, values=self.nombres_companias, state="readonly")
                 compañia.grid(row=4, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
