@@ -88,22 +88,40 @@ class ClienteModel:
             return []
 
 
-
     def agregar_cliente(self, nombre, apellido, dni, email, telefono, fecha_nacimiento, 
                         cp, domicilio, vencimiento_licencia="2000-02-03", dni_foto=None, 
                         foto_licencia=None, estado="activo"):
-        """Agrega un cliente nuevo, incluyendo imágenes opcionales."""
         try:
-            query = """INSERT INTO clientes 
-                       (nombre, apellido, dni, email, telefono, fecha_nacimiento, 
-                        cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado) 
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-            valores = (nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, 
-                       domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado)
-            self.db_connection.execute_query(query, valores)
+            # Insertar cliente
+            query_cliente = """INSERT INTO clientes 
+                            (nombre, apellido, dni, email, telefono, fecha_nacimiento, 
+                                cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado) 
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            valores_cliente = (nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, 
+                            domicilio, vencimiento_licencia, dni_foto, foto_licencia, estado)
+            self.db_connection.execute_query(query_cliente, valores_cliente)
             print("Cliente agregado exitosamente.")
+            
+            # Obtener el último cliente_id insertado
+            query_last_id = "SELECT LAST_INSERT_ID()"
+            last_inserted_id = self.db_connection.fetch_data(query_last_id)
+            
+            if last_inserted_id:
+                last_inserted_id = last_inserted_id[0][0]
+                print(f"Último cliente_id insertado: {last_inserted_id}")
+                
+                # Insertar vencimiento asociado al cliente
+                query_vencimiento = """INSERT INTO vencimientos (cliente_id) 
+                                    VALUES (%s)"""
+                self.db_connection.execute_query(query_vencimiento, (last_inserted_id,))
+                print("Registro de vencimiento agregado exitosamente.")
+            else:
+                print("No se pudo obtener el último cliente_id insertado.")
+            
         except Exception as e:
-            print(f"Error al agregar el cliente: {str(e)}")
+            print(f"Error al agregar el cliente o el vencimiento: {str(e)}")
+
+
 
     def convertir_imagen_a_bytes(self, imagen):
         """Convierte una imagen de PIL a bytes para almacenar en la base de datos."""
