@@ -100,7 +100,7 @@ class ClientesView:
             cliente = self.cliente_model.obtener_cliente_por_id(client_id)
 
             if cliente:
-                self.vehiculos_view.abrir_ventana_vehiculo()
+                self.vehiculos_view.abrir_ventana_vehiculo(client_id)
         else:
             messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")      
 
