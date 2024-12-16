@@ -1,4 +1,4 @@
-# controllers/vencimientos_controller.py
+
 
 class VencimientosController:
     def __init__(self, vencimiento_model, view):
@@ -11,8 +11,6 @@ class VencimientosController:
             from tkinter import messagebox
             messagebox.showinfo("Sin Vencimientos", "No hay vencimientos registrados.")
         self.view.actualizar_vencimientos(vencimientos)
-
-
 
     def buscar_cliente(self, search_term):
         vencimientos = self.model.mostrar_vencimientos()
