@@ -10,11 +10,8 @@ class VehiculosView:
         self.root = root
         self.cliente_model = cliente_model
         self.vehiculo_model = vehiculo_model
-        
         self.nombres_companias = self.vehiculo_model.obtener_compania()
         
-    def abrir_ventana_vehiculo(self, client_id):
-        self.cargar_vehiculo("Agregar Vehiculo", client_id)
         
     def centrar_ventana(self, ventana):
         # Obtener las dimensiones de la pantalla
@@ -32,12 +29,10 @@ class VehiculosView:
         # Posicionar la ventana en el centro
         ventana.geometry(f'{ancho_ventana}x{altura_ventana}+{x}+{y}')
     
-    def cargar_vehiculo(self, titulo, client_id):
-        
+    def cargar_vehiculo(self):
                 form_window = tk.Toplevel(self.root)
-                form_window.title(titulo)
+                form_window.title("Agregar Vehiculo")
                 form_window.config(bg='#2b2b2b') 
-                
                 
                 self.centrar_ventana(form_window)
                 
@@ -64,16 +59,16 @@ class VehiculosView:
                 self.compañia.grid(row=4, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Tipo de Vehiculo", fg_color='#2b2b2b', text_color='white').grid(row=5, column=0, padx=10, pady=10)
-                self.tVehiculo = ctk.CTkEntry(form_window)
-                self.tVehiculo.grid(row=5, column=1, padx=10, pady=10)
+                self.tipo_vehiculo = ctk.CTkEntry(form_window)
+                self.tipo_vehiculo.grid(row=5, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Categoria Seguro", fg_color='#2b2b2b', text_color='white').grid(row=6, column=0, padx=10, pady=10)
                 self.categoria = ctk.CTkEntry(form_window)
                 self.categoria.grid(row=6, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Accesorios", fg_color='#2b2b2b', text_color='white').grid(row=7, column=0, padx=10, pady=10)
-                self.categoria = ctk.CTkEntry(form_window)
-                self.categoria.grid(row=7, column=1, padx=10, pady=10)
+                self.accesorios = ctk.CTkEntry(form_window)
+                self.accesorios.grid(row=7, column=1, padx=10, pady=10)
                 
                 ctk.CTkLabel(form_window, text="Vencimiento de Poliza", fg_color='#2b2b2b', text_color='white').grid(row=8, column=0, padx=10, pady=10)
                 self.fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
@@ -83,9 +78,8 @@ class VehiculosView:
                 boton_guardar.grid(row=10, column=1, padx=10, pady=10)
     
     
-    def guardar_vehiculo(self, client_id):
+    def guardar_vehiculo(self):
         # Obtener los datos desde la vista (formularios)
-        cliente_id = client_id
         marca = self.marca.get()
         modelo = self.modelo.get()
         anio = self.año.get()
@@ -102,4 +96,4 @@ class VehiculosView:
             return
         
         # Llamar al modelo para guardar los datos
-        self.vehiculo_model.agregar_vehiculo(cliente_id, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
+        self.vehiculo_model.agregar_vehiculo( marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
