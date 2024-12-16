@@ -5,7 +5,7 @@ from Controller.VencimientosController import VencimientosController
 from Views.Home.home_view import HomeView
 
 class VencimientosView:
-    def __init__(self, root, cliente_model, compania_model, vencimiento_model, siniestros_model, vehiculo_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, vencimiento_model, siniestros_model, vehiculo_model, volver_menu):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
@@ -14,7 +14,7 @@ class VencimientosView:
         self.vehiculo_model = vehiculo_model
         
         self.controller = VencimientosController(vencimiento_model, self)
-        self.volver_menu_callback = volver_menu_callback 
+        self.volver_menu = volver_menu
 
         # Configuración de la ventana
         self.root.geometry("1200x700")
@@ -106,9 +106,8 @@ class VencimientosView:
             messagebox.showinfo("Próximos Vencimientos", "No hay vencimientos próximos en los próximos 15 días.")
 
     def volver_menu(self):
-        self.main_frame.pack_forget()
-        self.main_frame = None
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model)
+        self.volver_menu()  
+        self.main_frame.pack_forget()  
 
 #h
 if __name__ == "__main__":

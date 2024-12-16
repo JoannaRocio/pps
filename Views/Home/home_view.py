@@ -13,6 +13,10 @@ class HomeView:
         self.siniestros_model = siniestros_model
         self.vehiculo_model = vehiculo_model
    
+        self.clientes_view = None
+        self.companias_view = None
+        self.siniestros_view = None
+        self.vencimientos_view = None
         
         # self.main_frame = ctk.CTkFrame(self.root)
         # self.main_frame.pack(fill="both", expand=True)
@@ -25,7 +29,7 @@ class HomeView:
         self.main_frame = ctk.CTkFrame(self.root, fg_color='#2b2b2b')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        self.clientes_view = None 
+        
 
         # Título
         title = ctk.CTkLabel(self.main_frame, text="Menú principal", font=('Arial', 24), text_color='white')
@@ -124,12 +128,6 @@ class HomeView:
         # Mostrar el menú principal de HomeView
         self.main_frame.pack(fill="both", expand=True)
 
-        # Si la vista de compañías no ha sido creada, la creamos de nuevo
-        if not self.companias_view:  
-            print("Reinstanciando la vista de CompaniasView.")
-            from Views.Companias.companias_view import CompaniasView
-            # Al reinstanciar la vista de compañías:
-            self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model,self.siniestros_model, self.vehiculo_model, self.volver_menu)
 
 
     

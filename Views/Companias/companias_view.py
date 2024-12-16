@@ -7,14 +7,14 @@ from Views.Home.home_view import HomeView
 from Model.CompaniaModel import CompaniaModel
 
 class CompaniasView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model, vehiculo_model, vencimiento_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model, siniestros_model, vehiculo_model, vencimiento_model, volver_menu):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
         self.vencimiento_model = vencimiento_model
         self.vehiculo_model = vehiculo_model
         self.siniestros_model = siniestros_model
-        self.volver_menu_callback = volver_menu_callback
+        self.volver_menu = volver_menu
 
         self.root.geometry("900x600")
         self.root.title("Gestión de Compañías")
@@ -92,13 +92,17 @@ class CompaniasView:
             estado = 'disabled' if compania[3] == 'inactivo' else 'enabled'  # compania[3] es el campo `estado`
             self.tree.insert('', 'end', values=compania[:3], tags=(estado,))
 
+    def cerrar_vista_companias(self):
+        self.view.destroy()  # O eliminar la vista de alguna otra manera
+        self.controller = None  # Eliminar controlador viejo
 
+    def cerrar_conexion(self):
+        self.db_connection.close()  # Asegúrate de cerrar la conexión
+
+    
     def volver_menu(self):
-        self.main_frame.pack_forget()  # Oculta el marco actual
-        self.main_frame = None  # Limpia la referencia al marco actual
-
-        # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.siniestros_model, self.vehiculo_model)
+        self.volver_menu()  
+        self.main_frame.pack_forget()  
 
     def open_add_company_window(self):
         """Abre la ventana para agregar una nueva compañía"""

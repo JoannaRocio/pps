@@ -11,7 +11,7 @@ from Views.Home.home_view import HomeView
 from Views.Vehiculos.vehiculos_view import VehiculosView
 
 class ClientesView:
-    def __init__(self, root, cliente_model, compania_model,vencimiento_model,siniestros_model, vehiculo_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model,vencimiento_model,siniestros_model, vehiculo_model, volver_menu):
         self.root = root
         self.dni_foto = None
         self.foto_licencia = None
@@ -23,7 +23,7 @@ class ClientesView:
         self.vehiculo_model = vehiculo_model
        
         
-        self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
+        self.volver_menu = volver_menu 
         self.vehiculos_view = VehiculosView(self.root, self.cliente_model, self.vehiculo_model)
 
         self.root.geometry("1280x600")
@@ -106,11 +106,8 @@ class ClientesView:
 
     
     def volver_menu(self):
-        self.main_frame.pack_forget()  # Oculta el marco actual
-        self.main_frame = None  # Limpia la referencia al marco actual
-
-        # Crea y muestra la vista del HomeView en la misma ventana
-        menu = HomeView(self.root, self.compania_model, self.cliente_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model)
+        self.volver_menu()  
+        self.main_frame.pack_forget()  
 
     def obtener_clientes(self):
         self.tree.delete(*self.tree.get_children())
