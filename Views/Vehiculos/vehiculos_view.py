@@ -29,11 +29,10 @@ class VehiculosView:
         # Posicionar la ventana en el centro
         ventana.geometry(f'{ancho_ventana}x{altura_ventana}+{x}+{y}')
     
-    def cargar_vehiculo(self):
+    def cargar_vehiculo(self, cliente_id):
                 form_window = tk.Toplevel(self.root)
                 form_window.title("Agregar Vehiculo")
                 form_window.config(bg='#2b2b2b') 
-                
                 self.centrar_ventana(form_window)
                 
                 años = [str(year) for year in range(1995, 2031)]
@@ -74,12 +73,14 @@ class VehiculosView:
                 self.fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
                 self.fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
                 
-                boton_guardar = ctk.CTkButton(form_window, text="Guardar", command=self.guardar_vehiculo, fg_color='green', font=('Arial', 18))
+                boton_guardar = ctk.CTkButton(form_window, text="Guardar", command=lambda: self.guardar_vehiculo(cliente_id), fg_color='green', font=('Arial', 18))
                 boton_guardar.grid(row=10, column=1, padx=10, pady=10)
     
     
-    def guardar_vehiculo(self):
+    def guardar_vehiculo(self, cliente_id):
         # Obtener los datos desde la vista (formularios)
+        #print(cliente_id)
+       
         marca = self.marca.get()
         modelo = self.modelo.get()
         anio = self.año.get()
@@ -96,4 +97,4 @@ class VehiculosView:
             return
         
         # Llamar al modelo para guardar los datos
-        self.vehiculo_model.agregar_vehiculo( marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
+        self.vehiculo_model.agregar_vehiculo(cliente_id, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)

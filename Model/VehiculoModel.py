@@ -36,15 +36,15 @@ class VehiculoModel:
             return None  # Si hay un error, retornar None
 
 
-    def agregar_vehiculo(self, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza):
+    def agregar_vehiculo(self,cliente_id, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza):
         
         compania = self.obtener_id(compania_id)
         
         try:
             query = """INSERT INTO vehiculos 
-                       ( marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza) 
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-            valores = ( marca, modelo, anio, patente, compania, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
+                       ( cliente_id, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza) 
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            valores = ( cliente_id, marca, modelo, anio, patente, compania, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
             self.db_connection.execute_query(query, valores)
             print("Cliente agregado exitosamente.")
         except Exception as e:

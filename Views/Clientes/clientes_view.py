@@ -76,7 +76,7 @@ class ClientesView:
         btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.ventana_editar, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=2, padx=20, pady=10)
         
-        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.cargar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.agregar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
         boton_carga.grid(row=3, column=3, padx=20, pady=10)
 
         btn_disable = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.deshabilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
@@ -93,14 +93,14 @@ class ClientesView:
         # Cargar los clientes al inicio
         self.obtener_clientes()
 
-    def cargar_vehiculo(self):
+    def agregar_vehiculo(self):
         cli_seleccionado = self.tree.selection()
         if cli_seleccionado:
-            client_id = self.tree.item(cli_seleccionado, 'values')[0]  
-            cliente = self.cliente_model.obtener_cliente_por_id(client_id)
+            cliente_id = self.tree.item(cli_seleccionado, 'values')[0]  
+            cliente = self.cliente_model.obtener_cliente_por_id(cliente_id)
 
             if cliente:
-                self.vehiculos_view.cargar_vehiculo()
+                self.vehiculos_view.cargar_vehiculo(cliente_id)
         else:
             messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")      
 

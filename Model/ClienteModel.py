@@ -5,7 +5,7 @@ from PIL import Image
 class ClienteModel:
     def __init__(self, db_connection):
         self.db_connection = db_connection
-
+        
     def obtener_clientes(self):
         try:
             query = "SELECT id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, estado FROM clientes"
