@@ -11,16 +11,18 @@ from Views.Home.home_view import HomeView
 from Views.Vehiculos.vehiculos_view import VehiculosView
 
 class ClientesView:
-    def __init__(self, root, cliente_model, compania_model, vencimiento_model, vehiculo_model, siniestros_model, volver_menu_callback):
+    def __init__(self, root, cliente_model, compania_model,vencimiento_model,siniestros_model, vehiculo_model, volver_menu_callback):
         self.root = root
         self.dni_foto = None
         self.foto_licencia = None
 
         self.cliente_model = cliente_model
         self.compania_model = compania_model
-        self.vehiculo_model = vehiculo_model
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
+        self.vehiculo_model = vehiculo_model
+       
+        
         self.volver_menu_callback = volver_menu_callback  # Guarda la referencia del método
         self.vehiculos_view = VehiculosView(self.root, self.cliente_model, self.vehiculo_model)
         

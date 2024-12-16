@@ -55,7 +55,7 @@ def on_login_success(id):
     vehiculo_model = VehiculoModel(db_connection)       
     
 
-    vista_principal = HomeView(root, cliente_model, compania_model, vencimiento_model, siniestros_model, vehiculo_model)
+    vista_principal = HomeView(root, cliente_model, compania_model,vencimiento_model, siniestros_model,vehiculo_model)
     
     root.mainloop()
 

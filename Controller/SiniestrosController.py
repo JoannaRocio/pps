@@ -1,4 +1,4 @@
-class SiniestrosController:
+"""class SiniestrosController:
     def __init__(self, siniestros_model, siniestros_view):
         self.siniestros_model = siniestros_model  # El modelo que maneja los datos
         self.siniestros_view = siniestros_view  # La vista que mostrará los datos
@@ -12,3 +12,4 @@ class SiniestrosController:
         
         # Pasas los datos ordenados a la vista para que los muestre
         self.siniestros_view.mostrar_siniestros(siniestros_ordenados)
+"""

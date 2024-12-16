@@ -5,7 +5,7 @@ from tkcalendar import DateEntry  # Asegúrate de tener instalado tkcalendar
 # from Views.Clientes.clientes_view import ClientesView
 
 class HomeView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model , vencimiento_model, vehiculo_model ):
+    def __init__(self, root, cliente_model, compania_model,vencimiento_model, siniestros_model , vehiculo_model ):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
@@ -67,7 +67,7 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de clientes
-        self.clientes_view = ClientesView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model,  self.siniestros_model, self.volver_menu)
+        self.clientes_view = ClientesView(self.root, self.cliente_model, self.compania_model,self.vencimiento_model, self.siniestros_model, self.vehiculo_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
         self.clientes_view.main_frame.pack(fill="both", expand=True)
@@ -81,7 +81,7 @@ class HomeView:
         # Crea la vista de companias
         #self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model , self.volver_menu)
         # Al reinstanciar la vista de compañías:
-        self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model, self.volver_menu)
+        self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model,self.vencimiento_model, self.siniestros_model, self.vehiculo_model, self.volver_menu)
 
 
         # Muestra el marco de CompaniasView
@@ -94,7 +94,7 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de clientes
-        self.vencimientos_view = VencimientosView(self.root, self.cliente_model, self.compania_model, self.vehiculo_model, self.vencimiento_model, self.siniestros_model, self.volver_menu)
+        self.vencimientos_view = VencimientosView(self.root, self.cliente_model, self.compania_model,self.vencimiento_model, self.siniestros_model, self.vehiculo_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
         self.vencimientos_view.main_frame.pack(fill="both", expand=True)
@@ -106,10 +106,10 @@ class HomeView:
         self.main_frame.pack_forget()
         
         # Crea la vista de clientes
-        self.clientes_view = SiniestrosView(self.root, self.cliente_model, self.compania_model, self.vehiculo_model, self.vencimiento_model, self.siniestros_model, self.volver_menu)
+        self.siniestros_view = SiniestrosView(self.root, self.cliente_model, self.compania_model,self.vencimiento_model, self.siniestros_model, self.vehiculo_model, self.volver_menu)
         
         # Muestra el marco de ClientesView
-        self.clientes_view.main_frame.pack(fill="both", expand=True)
+        self.siniestros_view.main_frame.pack(fill="both", expand=True)
         
     def volver_menu(self):
         if self.clientes_view:
@@ -129,7 +129,7 @@ class HomeView:
             print("Reinstanciando la vista de CompaniasView.")
             from Views.Companias.companias_view import CompaniasView
             # Al reinstanciar la vista de compañías:
-            self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model, self.volver_menu)
+            self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model,self.siniestros_model, self.vehiculo_model, self.volver_menu)
 
 
     
