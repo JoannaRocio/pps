@@ -73,13 +73,11 @@ class VehiculosView:
                 self.fecha_poliza = DateEntry(form_window, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
                 self.fecha_poliza.grid(row=8, column=1, padx=10, pady=10)
                 
-                boton_guardar = ctk.CTkButton(form_window, text="Guardar", command=lambda: self.guardar_vehiculo(cliente_id), fg_color='green', font=('Arial', 18))
+                boton_guardar = ctk.CTkButton(form_window, text="Guardar", command=lambda: self.guardar_vehiculo(cliente_id, form_window), fg_color='green', font=('Arial', 18))
                 boton_guardar.grid(row=10, column=1, padx=10, pady=10)
+
     
-    
-    def guardar_vehiculo(self, cliente_id):
-        # Obtener los datos desde la vista (formularios)
-        #print(cliente_id)
+    def guardar_vehiculo(self, cliente_id, form_window):
        
         marca = self.marca.get()
         modelo = self.modelo.get()
@@ -98,3 +96,8 @@ class VehiculosView:
         
         # Llamar al modelo para guardar los datos
         self.vehiculo_model.agregar_vehiculo(cliente_id, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
+        
+        form_window.destroy()
+        
+    def ver_autos(self, cliente_id):
+        pass

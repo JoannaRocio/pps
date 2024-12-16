@@ -22,7 +22,6 @@ class ClientesView:
         self.siniestros_model = siniestros_model
         self.vehiculo_model = vehiculo_model
        
-        
         self.volver_menu = volver_menu 
         self.vehiculos_view = VehiculosView(self.root, self.cliente_model, self.vehiculo_model)
 
@@ -76,14 +75,17 @@ class ClientesView:
         btn_edit = ctk.CTkButton(self.main_frame, text="Editar Cliente", command=self.ventana_editar, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=2, padx=20, pady=10)
         
-        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehiculo", command=self.agregar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
-        boton_carga.grid(row=3, column=3, padx=20, pady=10)
+        boton_ver_vehiculo = ctk.CTkButton(self.main_frame, text="Ver Vehículo", command=self.ver_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_ver_vehiculo.grid(row=3, column=3, padx=20, pady=10)
+        
+        boton_carga = ctk.CTkButton(self.main_frame, text="Agregar Vehículo", command=self.agregar_vehiculo, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_carga.grid(row=3, column=4, padx=20, pady=10)
 
         btn_disable = ctk.CTkButton(self.main_frame, text="Deshabilitar", command=self.deshabilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_disable.grid(row=3, column=4, padx=20, pady=10)
+        btn_disable.grid(row=3, column=5, padx=20, pady=10)
 
         btn_enable = ctk.CTkButton(self.main_frame, text="Habilitar", command=self.habilitar_cliente, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_enable.grid(row=3, column=5, padx=20, pady=10)
+        btn_enable.grid(row=3, column=6, padx=20, pady=10)
 
         # Configuración del estiramiento de las columnas
         self.main_frame.grid_rowconfigure(2, weight=1)
@@ -104,6 +106,28 @@ class ClientesView:
         else:
             messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")      
 
+    def ver_vehiculo(self):
+        cli_seleccionado = self.tree.selection()
+        if cli_seleccionado:
+            cliente_id = self.tree.item(cli_seleccionado, 'values')[0]  
+            cliente = self.vehiculo_model.obtener_vehiculo(cliente_id)
+            
+            if cliente:
+                detail_window = Toplevel(self.root)
+                detail_window.title("Datos del Vehículo")
+                detail_window.config(bg='#2b2b2b')
+                self.centrar_ventana(detail_window)
+
+                ctk.CTkLabel(detail_window, text="Datos del Vehiculo", font=('Arial', 18), text_color='white').pack(pady=10)
+
+                keys = ['ID_VEHICULO', 'ID_CLIENTE', 'MARCA', 'MODELO', 'AÑO', 'TIPO DE VEHICULO', 'CATEGORIA SEGURO', 'ACCESORIOS',
+                        'VENCIMIENTO DE POLIZA', 'PATENTE', 'ID_COMPANIA', 'NOMBRE CLIENTE', 'NOMBRE COMPAÑIA', ]
+                for key, value in zip(keys, cliente):
+                    ctk.CTkLabel(detail_window, text=f"{key}: {value}", fg_color='#2b2b2b', text_color='white').pack(pady=5)
+            else:
+                messagebox.showerror("Error", "Cliente no encontrado.")
+        else:
+            messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")
     
     def volver_menu(self):
         self.volver_menu()  
@@ -152,7 +176,7 @@ class ClientesView:
 
                 ctk.CTkLabel(detail_window, text="Datos del Cliente", font=('Arial', 18), text_color='white').pack(pady=10)
 
-                keys = ['ID', 'NOMBRE', 'APELIIDO', 'DNI', 'EMAIL', 'TELÉFONO', 'FECHA DE NACIMIENTO', 'CODIGO POSTAL', 'DOMICILIO', 'VENCIMIENTO DE LICENCIA', ]
+                keys = ['ID', 'NOMBRE', 'APELLIDO', 'DNI', 'EMAIL', 'TELÉFONO', 'FECHA DE NACIMIENTO', 'CODIGO POSTAL', 'DOMICILIO', 'VENCIMIENTO DE LICENCIA', ]
                 for key, value in zip(keys, cliente):
                     ctk.CTkLabel(detail_window, text=f"{key}: {value}", fg_color='#2b2b2b', text_color='white').pack(pady=5)
 

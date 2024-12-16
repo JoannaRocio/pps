@@ -49,3 +49,30 @@ class VehiculoModel:
             print("Cliente agregado exitosamente.")
         except Exception as e:
             print(f"Error al agregar el cliente: {str(e)}")
+            
+    def obtener_vehiculo(self, cliente_id):
+        try: 
+            # Consulta SQL mejorada con JOIN
+            query = """
+            SELECT 
+                v.*,  -- Todos los campos de la tabla vehiculos
+                c.nombre AS cliente_nombre,  -- Nombre del cliente
+                cmp.nombre AS compania_nombre  -- Nombre de la compañía
+            FROM vehiculos v
+            JOIN clientes c ON v.cliente_id = c.id  -- Relaciona vehiculos con clientes
+            JOIN companias cmp ON v.compania_id = cmp.id_compania  -- Relaciona vehiculos con companias
+            WHERE v.cliente_id = %s
+            """
+            
+            # Ejecutamos la consulta pasando cliente_id como parámetro
+            resultado = self.db_connection.fetch_data(query, (cliente_id,))
+            print(resultado)
+            
+            if resultado:
+                return resultado[0]  # Retorna el primer registro de la consulta
+            
+            return None  # Si no hay resultados, retorna None
+        
+        except Exception as e:
+            print(f"Error al obtener vehículo: {str(e)}")
+            return None  # Si ocurre un error, retorna None
