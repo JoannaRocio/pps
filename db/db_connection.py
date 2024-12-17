@@ -9,7 +9,7 @@ class DatabaseConnection:
         self.host = 'localhost'  # Cambiar por la dirección de tu servidor MySQL
         self.database = 'gestion_seguros'
         self.user = 'root'
-        self.password = '1234'
+        self.password = '1920'
         self.port = 3306
         self.connection = None
 
