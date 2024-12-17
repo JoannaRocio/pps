@@ -19,7 +19,7 @@ class SiniestrosView:
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
         self.vehiculo_model = vehiculo_model
-        self.controller = SiniestroController(siniestros_model,cliente_model,vehiculo_model, self)
+        self.controller = SiniestroController(siniestros_model, cliente_model, vehiculo_model, self)
         self.volver_menu = volver_menu
         
         self.selected_siniestro_id = None
@@ -170,6 +170,7 @@ class SiniestrosView:
     def agregar_siniestro (self):
 
         self.controller.mostrar_agregar_siniestro(self.root, self.volver_menu)
+       
 
 
 
