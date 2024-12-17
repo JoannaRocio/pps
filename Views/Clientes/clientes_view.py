@@ -9,6 +9,7 @@ from PIL import ImageTk
 from tkinter import filedialog
 from Views.Home.home_view import HomeView
 from Views.Vehiculos.vehiculos_view import VehiculosView
+import re
 
 class ClientesView:
     def __init__(self, root, cliente_model, compania_model,vencimiento_model,siniestros_model, vehiculo_model, volver_menu):
@@ -331,15 +332,37 @@ class ClientesView:
         boton_guardar.grid(row=10, column=0, columnspan=2, pady=20)
         
     def crear_cliente(self, form_window, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia):
-        """Crea un nuevo cliente y guarda los datos, incluyendo las fotos opcionales."""
-        if not nombre or not apellido or not dni or not email or not telefono:
+
+
+        # Validación: Campos obligatorios
+        if not nombre or not apellido or not dni or not email or not telefono or not cp or not domicilio:
             messagebox.showwarning("Advertencia", "Por favor, completa todos los campos obligatorios.")
             return
 
+        # Validación: DNI (solo números, longitud específica)
+        if not dni.isdigit() or len(dni) not in (7, 8):
+            messagebox.showwarning("Advertencia", "El DNI debe contener solo números y tener 7 u 8 dígitos.")
+            return
+
+        # Validación: Correo electrónico
+        correo_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(correo_regex, email):
+            messagebox.showwarning("Advertencia", "Por favor, ingresa un correo electrónico válido.")
+            return
+
+        # Validación: Teléfono (solo números, puede tener espacios o guiones)
+        if not re.match(r'^[0-9\s\-]+$', telefono):
+            messagebox.showwarning("Advertencia", "El teléfono solo puede contener números, espacios o guiones.")
+            return
+        
         try:
-            # Validación de las fotos
-            if dni_foto is None or foto_licencia is None:
-                messagebox.showwarning("Advertencia", "Se agrego cliente sin fotos")
+            # Validación de las fotos: si solo se sube una de las dos
+            if dni_foto and not foto_licencia:
+                messagebox.showwarning("Advertencia", "Aviso: Se creó el cliente sin la foto de la licencia.")
+            elif foto_licencia and not dni_foto:
+                messagebox.showwarning("Advertencia", "Aviso: Se creó el cliente sin la foto del DNI.")
+            elif not dni_foto and not foto_licencia:
+                messagebox.showwarning("Advertencia", "Aviso: Se creó el cliente sin fotos.")
 
             # Convertir las imágenes a bytes si son objetos Image
             dni_foto_bytes = self.cliente_model.convertir_imagen_a_bytes(dni_foto) if isinstance(dni_foto, Image.Image) else dni_foto
@@ -362,11 +385,28 @@ class ClientesView:
 
 
     def editar_cliente(self, client_id, form_window, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, dni_foto, foto_licencia):
-        """Edita un cliente existente y actualiza sus datos, incluyendo las fotos opcionales."""
-        if not nombre or not apellido or not dni or not email or not telefono:
+
+        # Validación: Campos obligatorios
+        if not nombre or not apellido or not dni or not email or not telefono or not cp or not domicilio:
             messagebox.showwarning("Advertencia", "Por favor, completa todos los campos obligatorios.")
             return
 
+        # Validación: DNI (solo números, longitud específica)
+        if not dni.isdigit() or len(dni) not in (7, 8):
+            messagebox.showwarning("Advertencia", "El DNI debe contener solo números y tener 7 u 8 dígitos.")
+            return
+
+        # Validación: Correo electrónico
+        correo_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(correo_regex, email):
+            messagebox.showwarning("Advertencia", "Por favor, ingresa un correo electrónico válido.")
+            return
+
+        # Validación: Teléfono (solo números, puede tener espacios o guiones)
+        if not re.match(r'^[0-9\s\-]+$', telefono):
+            messagebox.showwarning("Advertencia", "El teléfono solo puede contener números, espacios o guiones.")
+            return
+        
         try:
             
              # Convertir las imágenes a bytes si son objetos Image
