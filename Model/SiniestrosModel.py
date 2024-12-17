@@ -14,8 +14,7 @@ class SiniestrosModel:
         vehiculos = cursor.fetchall()
         cursor.close()
         return vehiculos
-
-        
+   
     def guardar_siniestro(self, cliente_nombre, vehiculo_id, estado, descripcion, fecha_inicio, imagenes, archivo):
         """Guardar el siniestro en la base de datos."""
         try:
@@ -55,6 +54,7 @@ class SiniestrosModel:
             s.imagenes AS siniestro_imagenes,
             s.archivo AS siniestro_archivo,
             s.link_url AS siniestro_link,
+            s.fecha_inicio_siniestro AS siniestro_fecha_inicio_siniestro,
             v.id AS vehiculo_id,
             v.patente AS vehiculo_patente, 
             v.modelo AS vehiculo_nombre,
@@ -63,6 +63,7 @@ class SiniestrosModel:
             c.dni AS cliente_dni,
             co.nombre AS compania_nombre,  -- Nombre de la compañía aseguradora
             co.sitio_web AS compania_sitio_web  -- Sitio web de la compañía aseguradora
+            
         FROM 
             siniestros s
         JOIN 

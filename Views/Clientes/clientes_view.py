@@ -298,10 +298,10 @@ class ClientesView:
                 dni.insert(0, cliente[3])
                 email.insert(0, cliente[4])
                 telefono.insert(0, cliente[5])
-                fecha_nacimiento.insert(0, cliente[6])
+                fecha_nacimiento.set_date(cliente[6])
                 cp.insert(0, cliente[7])
                 domicilio.insert(0, cliente[8])
-                vencimiento_licencia.insert(0, cliente[9])
+                vencimiento_licencia.set_date(cliente[9])
 
             # Verificar imágenes
             self.dni_foto = self.dni_foto if hasattr(self, 'dni_foto') else None
