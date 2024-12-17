@@ -11,7 +11,6 @@ class UsuarioView:
         self.root.geometry("400x300")
         self.center_window()
         
-        # Campos de inicio de sesión
         self.username_entry = ctk.CTkEntry(self.root, placeholder_text="Usuario")
         self.username_entry.pack(pady=10)
         self.username_entry.bind("<Return>", self.on_enter_pressed) #acepta el enter
@@ -27,8 +26,8 @@ class UsuarioView:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        window_width = 400  # Ancho de la ventana
-        window_height = 300  # Alto de la ventana
+        window_width = 400 
+        window_height = 300
 
         position_top = int(screen_height / 2 - window_height / 2)
         position_left = int(screen_width / 2 - window_width / 2)
@@ -36,17 +35,14 @@ class UsuarioView:
         self.root.geometry(f'{window_width}x{window_height}+{position_left}+{position_top}')
         
     def on_enter_pressed(self, event):
-        # Llama a la función de login cuando se presiona Enter en cualquiera de los campos
         self.login()
         
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-        self.root.destroy()
+
         if self.usuario_model.verificar_credenciales(username, password):
-            pass
-            #self.root.destroy() # Cierra la ventana de login
-            #self.on_login_success()  # Llama a la función de éxito
-            # self.root.destroy()  # Cierra la ventana de login
+            self.root.destroy()
+            self.on_login_success() 
         else:
             messagebox.showerror("Error", "Credenciales incorrectas.")

@@ -28,7 +28,6 @@ def on_login_success(id):
     
     root = ctk.CTk()  
     root.title("Sistema de Gestión de Clientes")
-    print(f"Login exitoso. ID del usuario: {id}")
 
     root.update_idletasks()
 
@@ -66,7 +65,6 @@ def main():
     try:
         db_connection.connect()
         if db_connection.connection and db_connection.connection.is_connected():
-            print("Conexión exitosa a la base de datos")
 
             root = ctk.CTk()
 
