@@ -8,6 +8,7 @@ class SiniestroAgregarView:
         
         self.siniestro_model = siniestro_model
         self.controller = controller
+        
 
         self.top = ctk.CTkToplevel(self.root)
         self.top.geometry("800x600")
@@ -85,4 +86,7 @@ class SiniestroAgregarView:
 
         # Llamar al controlador para guardar el siniestro
         self.controller.guardar_siniestro(cliente_info, vehiculo_info)
-        self.top.destroy()  # Cerrar la ventana una vez guardado
+       
+        self.top.destroy()  
+       
+   
