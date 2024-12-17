@@ -67,7 +67,7 @@ class SiniestrosView:
         btn_estado.grid(row=3, column=2, padx=20, pady=10)
 
      # Creamos la tabla de vencimientos (Treeview)
-        self.treeview = ttk.Treeview(self.main_frame, columns=("id","Patente", "Vehículo",  "Apellido","Nombre", "DNI", "Sitio Web", "Estado"), show="headings")
+        self.treeview = ttk.Treeview(self.main_frame, columns=("id","Patente", "Vehículo",  "Apellido","Nombre","Fecha inicio", "DNI", "Sitio Web", "Estado"), show="headings")
 
         # Configura las columnas
         self.treeview.heading("id", text="id")
@@ -75,6 +75,7 @@ class SiniestrosView:
         self.treeview.heading("Vehículo", text="Vehículo")
         self.treeview.heading("Apellido", text="Apellido")
         self.treeview.heading("Nombre", text="Nombre")
+        self.treeview.heading("Fecha inicio", text="Fecha inicio")
         self.treeview.heading("DNI", text="DNI")
         self.treeview.heading("Sitio Web", text="Sitio Web")
         self.treeview.heading("Estado", text="Estado")
@@ -85,6 +86,7 @@ class SiniestrosView:
         self.treeview.column("Vehículo", width=150)
         self.treeview.column("Apellido", width=100)
         self.treeview.column("Nombre", width=100)
+        self.treeview.column("Fecha inicio", width=120)
         self.treeview.column("DNI", width=120)
         self.treeview.column("Sitio Web", width=200)
         self.treeview.column("Estado", width=120)
@@ -126,14 +128,15 @@ class SiniestrosView:
             for siniestro in siniestros:
                 # Inserta cada siniestro como una fila en el Treeview
                 self.treeview.insert('', 'end', values=(
-                    siniestro[0],
-                    siniestro[8],  # vehiculo_patente
-                    siniestro[9],  # vehiculo_nombre
-                    siniestro[10], #clietne nombre
-                    siniestro[11], #cliente apellido
-                    siniestro[12],  # cliente_dni
-                    siniestro[14],  # compania_nombre
-                    siniestro[2]   # siniestro_estado
+                    siniestro[0], #id
+                    siniestro[9],  #Patente
+                    siniestro[10],  #Vehículo
+                    siniestro[12], #Apellido
+                    siniestro[11], #Nombre
+                    siniestro[7],#Fecha inicio
+                    siniestro[13],#DNI
+                    siniestro[15], #Sitio Web
+                    siniestro[2]   #Estado
                 ))
 
     # ------------------------------ es para ver detalle Siniestro------------------------------
