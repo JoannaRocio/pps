@@ -96,7 +96,7 @@ class VehiculosView:
         
         # Llamar al modelo para guardar los datos
         self.vehiculo_model.agregar_vehiculo(cliente_id, marca, modelo, anio, patente, compania_id, tipo_vehiculo, tipo_categoria, accesorios, vencimiento_poliza)
-        
+        messagebox.showinfo("Éxito", "Vehículo guardado correctamente.")
         form_window.destroy()
         
     
