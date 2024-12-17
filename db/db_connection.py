@@ -1,6 +1,9 @@
 import mysql.connector
 from mysql.connector import Error
-
+import os
+import subprocess
+from tkinter import messagebox
+#
 class DatabaseConnection:
     def __init__(self):
         self.host = 'localhost'  # Cambiar por la dirección de tu servidor MySQL
@@ -52,16 +55,11 @@ class DatabaseConnection:
                 cursor.close()
 
     def fetch_data(self, query, params=None):
-        """
-        Realiza una consulta SELECT y devuelve los resultados.
-        :param query: Consulta SQL a ejecutar.
-        :param params: Parámetros opcionales para la consulta.
-        :return: Resultados de la consulta.
-        """
         if not self.connection or not self.connection.is_connected():
-            print("No hay conexión a la base de datos.")
-            return None
-
+            print("Conexión perdida, intentando reconectar...")
+            self.connect()  
+        
+        print("Conexión activa, ejecutando consulta...")
         cursor = None
         try:
             cursor = self.connection.cursor()
@@ -74,6 +72,7 @@ class DatabaseConnection:
             if cursor:
                 cursor.close()
 
+
     def close_connection(self):
         """
         Cierra la conexión a la base de datos.
@@ -82,4 +81,23 @@ class DatabaseConnection:
             self.connection.close()
             print("Conexión cerrada")
 
-  
+    def backup(self):
+        print("entro")
+        usuario = "root" 
+        contrasena = "1234" 
+        base_de_datos = "gestion_seguros" 
+        ruta_respaldo = "C:/Users/RL/Desktop/coli/mi_db_backup.sql"
+        
+        if not os.path.exists(os.path.dirname(ruta_respaldo)):
+            os.makedirs(os.path.dirname(ruta_respaldo))
+    
+        #comando = f"mysqldump -u {usuario} -p{contrasena} {base_de_datos} > {ruta_respaldo}"
+        #comando = f"C:\Program^ Files\MySQL\MySQL^ Server^ 8.0\bin\mysqldump -u {usuario} -p{contrasena} {base_de_datos} > {ruta_respaldo}"
+        comando = f'"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump" -u {usuario} -p{contrasena} {base_de_datos} > {ruta_respaldo}'
+
+        try:
+            # Ejecutar el comando
+            subprocess.run(comando, shell=True, check=True)
+            messagebox.showinfo("Éxito", "El respaldo se ha realizado con éxito.")
+        except subprocess.CalledProcessError as e:
+            messagebox.showerror("Error", f"Hubo un problema al hacer el respaldo: {e}")

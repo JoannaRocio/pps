@@ -150,3 +150,20 @@ class ClienteModel:
             print("Cliente habilitado con éxito")
         except Exception as e:
             print(f"Error al habilitar cliente: {str(e)}")
+
+    def obtener_clientes_sinestro(self, search_term=None):
+        try:
+            # Modificar la consulta para usar el search_term si está presente
+            query = "SELECT id, nombre, apellido, dni, email, telefono, fecha_nacimiento, cp, domicilio, vencimiento_licencia, estado FROM clientes"
+            
+            # Si se proporciona un término de búsqueda, se añade a la consulta
+            if search_term:
+                query += " WHERE nombre LIKE %s OR apellido LIKE %s OR dni LIKE %s"
+                params = (f"%{search_term}%", f"%{search_term}%", f"%{search_term}%")
+            else:
+                params = ()
+            
+            return self.db_connection.fetch_data(query, params)
+        except Exception as e:
+            print(f"Error al obtener clientes: {str(e)}")
+            return []

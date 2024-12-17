@@ -99,5 +99,4 @@ class VehiculosView:
         
         form_window.destroy()
         
-    def ver_autos(self, cliente_id):
-        pass
+    

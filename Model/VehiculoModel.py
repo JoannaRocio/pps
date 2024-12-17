@@ -1,4 +1,5 @@
 import mysql.connector
+from tkinter import messagebox
 
 class VehiculoModel:
     def __init__(self, db_connection):
@@ -66,7 +67,6 @@ class VehiculoModel:
             
             # Ejecutamos la consulta pasando cliente_id como parámetro
             resultado = self.db_connection.fetch_data(query, (cliente_id,))
-            print(resultado)
             
             if resultado:
                 return resultado[0]  # Retorna el primer registro de la consulta
@@ -76,3 +76,19 @@ class VehiculoModel:
         except Exception as e:
             print(f"Error al obtener vehículo: {str(e)}")
             return None  # Si ocurre un error, retorna None
+        
+        
+        
+    def cargar_vehiculos_por_cliente(self, cliente_id):
+        """Cargar los vehículos asociados a un cliente."""
+        try:
+            print("ID del cliente pasado a la consulta:", cliente_id)
+            query = "SELECT id, patente, modelo FROM vehiculos WHERE cliente_id = %s"
+            print("Consulta SQL:", query)
+            vehiculos = self.db_connection.fetch_data(query, (cliente_id,))
+            print("Vehículos obtenidos de la base de datos:", vehiculos)
+            return vehiculos
+        except Exception as e:
+            print(f"Error al cargar vehículos: {str(e)}")
+            return []
+

@@ -1,32 +1,32 @@
 import customtkinter as ctk
-from tkinter import messagebox
-from tkinter import ttk, Toplevel
-from tkcalendar import DateEntry
-from Views.Home.home_view import HomeView
-import tkinter as tk
-from tkinter import *
+from tkinter import filedialog, messagebox
 from tkinter import ttk
+from tkcalendar import DateEntry
+import tkinter as tk
+from Controller.SiniestrosController import SiniestroController
+from PIL import Image, ImageTk
+import io
+
+from Views.Siniestros.agregar_siniestro_view import AgregarSiniestroView
+from Views.Siniestros.detalle_siniestro_view import DetalleSiniestroView
+
 
 class SiniestrosView:
-    def __init__(self, root, cliente_model, compania_model, siniestros_model, vencimiento_model, vehiculo_model, volver_menu):
-        
-        # Mock de datos
-        mock_data = [
-            ("ABC123", "Toyota Corolla", "García", "Juan", "12345678", "Pendiente"),
-            ("DEF456", "Ford Fiesta", "López", "María", "87654321", "Resuelto"),
-            ("GHI789", "Chevrolet Onix", "Pérez", "Carlos", "11223344", "Pendiente"),
-            ("JKL012", "Renault Clio", "Martínez", "Ana", "44332211", "Resuelto")
-        ]
-
+    def __init__(self, root, cliente_model, compania_model, vencimiento_model, siniestros_model, vehiculo_model, volver_menu):
         self.root = root
         self.cliente_model = cliente_model
         self.compania_model = compania_model
         self.vencimiento_model = vencimiento_model
         self.siniestros_model = siniestros_model
         self.vehiculo_model = vehiculo_model
+        self.controller = SiniestroController(siniestros_model,cliente_model,vehiculo_model, self)
         self.volver_menu = volver_menu
-
-        self.root.geometry("900x600")
+        
+        self.selected_siniestro_id = None
+        
+        
+        # Configuración de la ventana principal
+        self.root.geometry("1200x700")
         self.root.title("Gestión de Siniestros")
         self.root.config(bg='#2b2b2b')
 
@@ -34,117 +34,169 @@ class SiniestrosView:
         self.main_frame = ctk.CTkFrame(self.root, fg_color='#2b2b2b')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Título
-        title = ctk.CTkLabel(self.main_frame, text="Siniestros", font=('Arial', 24), text_color='white')
-        title.grid(row=0, column=0, columnspan=4, padx=20, pady=20)
+         # Título
+        title = ctk.CTkLabel(self.main_frame, text="Siniestro", font=('Arial', 24), text_color='white')
+        title.grid(row=0, column=0, columnspan=6, padx=20, pady=20)
 
         # Botón "Volver"
         back_button = ctk.CTkButton(self.main_frame, text="Volver", command=self.volver_menu, fg_color='#3b3b3b', font=('Arial', 18))
-        back_button.grid(row=0, column=0, padx=20, pady=20, sticky='ne')
+        back_button.grid(row=0, column=0, padx=20, pady=20, sticky='w')
+        
+         # Campo de búsqueda y botones
+        search_frame = ctk.CTkFrame(self.main_frame, fg_color='#2b2b2b')
+        search_frame.grid(row=1, column=0, columnspan=6, padx=20, pady=10, sticky='ew')
 
-        # Campo de búsqueda
         self.search_var = ctk.StringVar()
-        search_entry = ctk.CTkEntry(self.main_frame, textvariable=self.search_var, placeholder_text="Buscar cliente")
-        search_entry.grid(row=1, column=0, padx=20, pady=10, columnspan=3, sticky="ew")
+        search_entry = ctk.CTkEntry(search_frame, textvariable=self.search_var, placeholder_text="Buscar cliente")
+        search_entry.pack(side='left', padx=(0, 10), fill='x', expand=True)
 
-        search_button = ctk.CTkButton(self.main_frame, text="🔍", command=self.buscarCliente, fg_color='#3b3b3b', font=('Arial', 18))
-        search_button.grid(row=1, column=3, padx=20, pady=10)
-        
-        # Tabla para mostrar los Siniestros
-        self.columns = ('Patente', 'Vehículo', 'Apellido', 'Nombre', 'DNI', 'Estado')
-        self.tree = ttk.Treeview(self.main_frame, columns=self.columns, show='headings', style="Treeview")
-        self.tree.heading('Patente', text='Patente')
-        self.tree.heading('Vehículo', text='Vehículo')
-        self.tree.heading('Apellido', text='Apellido')
-        self.tree.heading('Nombre', text='Nombre')
-        self.tree.heading('DNI', text='DNI')
-        self.tree.heading('Estado', text='Estado')
-        self.tree.grid(row=2, column=0, columnspan=4, padx=20, pady=20, sticky='nsew')
+        search_button = ctk.CTkButton(search_frame, text="🔍", command=self.buscarCliente, fg_color='#3b3b3b', font=('Arial', 18))
+        search_button.pack(side='left', padx=(0, 10))
 
-        # Cambia el ancho según sea necesario
-        self.tree.column('Patente', minwidth=50, width=100)  
-        self.tree.column('Vehículo', minwidth=50, width=150) 
-        self.tree.column('Apellido', minwidth=50, width=100)  
-        self.tree.column('Nombre', minwidth=50, width=100)   
-        self.tree.column('DNI', minwidth=50, width=80)
-        self.tree.column('Estado', minwidth=50, width=100)  
-        
-        # Configurar los tags para colores para los estados
-        self.tree.tag_configure('Pendiente', background='white', foreground='red')
-        self.tree.tag_configure('Resuelto', background='white', foreground='green')
-
-        # Botones de funcionalidad
-        btn_add = ctk.CTkButton(self.main_frame, text="Agregar", fg_color='#3b3b3b', font=('Arial', 18))
+        """Crea botones para funcionalidades: Agregar, Editar y Cambiar Estado."""
+        btn_add = ctk.CTkButton(self.main_frame, text="Agregar", command=self.agregar_siniestro, fg_color='#3b3b3b', font=('Arial', 18))
         btn_add.grid(row=3, column=0, padx=20, pady=10)
 
-        btn_edit = ctk.CTkButton(self.main_frame, text="Editar", fg_color='#3b3b3b', font=('Arial', 18))
+        btn_edit = ctk.CTkButton(self.main_frame, text="Editar", command=self.editar_siniestro, fg_color='#3b3b3b', font=('Arial', 18))
         btn_edit.grid(row=3, column=1, padx=20, pady=10)
-        
-            
-        # Insertar los datos mock en la tabla y aplicar colores
-        for item in mock_data:
-            estado = item[5]  # El estado está en la posición 5 del array
-            if estado == "Pendiente":
-                self.tree.insert("", "end", values=item, tags=('Pendiente',))
-            elif estado == "Resuelto":
-                self.tree.insert("", "end", values=item, tags=('Resuelto',))
-            else:
-                self.tree.insert("", "end", values=item)  # Sin etiqueta de color
-        
-        # # Crear la tabla (usar grid para organizarlos)
-        # self.show_table(mock_data)
 
-        # Configuración del estiramiento de las columnas
+        btn_estado = ctk.CTkButton(self.main_frame, text="Cambiar Estado", command=self.cambiar_estado_siniestro, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_estado.grid(row=3, column=2, padx=20, pady=10)
+        
+        btn_estado = ctk.CTkButton(self.main_frame, text="Ver Detalle", command=self.ver_detalle_siniestro, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_estado.grid(row=3, column=2, padx=20, pady=10)
+
+     # Creamos la tabla de vencimientos (Treeview)
+        self.treeview = ttk.Treeview(self.main_frame, columns=("id","Patente", "Vehículo",  "Apellido","Nombre", "DNI", "Sitio Web", "Estado"), show="headings")
+
+        # Configura las columnas
+        self.treeview.heading("id", text="id")
+        self.treeview.heading("Patente", text="Patente")
+        self.treeview.heading("Vehículo", text="Vehículo")
+        self.treeview.heading("Apellido", text="Apellido")
+        self.treeview.heading("Nombre", text="Nombre")
+        self.treeview.heading("DNI", text="DNI")
+        self.treeview.heading("Sitio Web", text="Sitio Web")
+        self.treeview.heading("Estado", text="Estado")
+
+        # Configura el tamaño de las columnas
+        self.treeview.column("id", width=30)
+        self.treeview.column("Patente", width=100)
+        self.treeview.column("Vehículo", width=150)
+        self.treeview.column("Apellido", width=100)
+        self.treeview.column("Nombre", width=100)
+        self.treeview.column("DNI", width=120)
+        self.treeview.column("Sitio Web", width=200)
+        self.treeview.column("Estado", width=120)
+
+        # Coloca el treeview en la interfaz
+        self.treeview.grid(row=2, column=0, columnspan=7, padx=20, pady=20, sticky="nsew")
+
+        # Configuración de la fila y columnas para que el treeview se expanda
         self.main_frame.grid_rowconfigure(2, weight=1)
-        for i in range(4):
+        for i in range(7):
             self.main_frame.grid_columnconfigure(i, weight=1)
-        
-    def show_table(self, mock_data):
-        # Crear la tabla (usar grid para organizarlos)
-        for r, item in enumerate(mock_data):
-            for c, value in enumerate(item):
-                if c == 5:  # Columna "Estado"
-                    # Si el estado es "Pendiente", color rojo; si "Resuelto", verde
-                    color = 'red' if value == 'Pendiente' else 'green'
-                    b = Entry(self.root, text=value, foreground=color, width=20)
-                    b.grid(row=r, column=c)
-                else:
-                    # Las demás celdas tendrán el color por defecto
-                    b = Entry(self.root, text=value, width=20)
-                    b.grid(row=r, column=c)
-        
-                # Tabla para mostrar los Siniestros
-        self.columns = ('Patente', 'Vehículo', 'Apellido', 'Nombre', 'DNI', 'Estado')
-        self.tree = ttk.Treeview(self.main_frame, columns=self.columns, show='headings', style="Treeview")
-        self.tree.heading('Patente', text='Patente')
-        self.tree.heading('Vehículo', text='Vehículo')
-        self.tree.heading('Apellido', text='Apellido')
-        self.tree.heading('Nombre', text='Nombre')
-        self.tree.heading('DNI', text='DNI')
-        self.tree.heading('Estado', text='Estado')
-        self.tree.grid(row=2, column=0, columnspan=4, padx=20, pady=20, sticky='nsew')
 
-        # Cambia el ancho según sea necesario
-        self.tree.column('Patente', minwidth=50, width=100)  
-        self.tree.column('Vehículo', minwidth=50, width=150) 
-        self.tree.column('Apellido', minwidth=50, width=100)  
-        self.tree.column('Nombre', minwidth=50, width=100)   
-        self.tree.column('DNI', minwidth=50, width=80)
-        self.tree.column('Estado', minwidth=50, width=100)  
+        self.main_frame.grid_rowconfigure(2, weight=1)
+        for i in range(6):
+            self.main_frame.grid_columnconfigure(i, weight=1)
+
+        self.treeview.bind("<Double-1>", self.abrir_sitio_web)
+        self.treeview.bind("<ButtonRelease-1>", self.seleccionar_siniestro)
         
-        # Configurar los tags para colores para los estados
-        self.tree.tag_configure('Pendiente', foreground='red')
-        self.tree.tag_configure('Resuelto', foreground='green')
-        
+        self.controller.mostrar_siniestros()
+     
+     
+     
+ # ------------------------------ buscador de Siniestro------------------------------
     def buscarCliente(self):
-        search_term = self.search_var.get().lower()  # Obtener término de búsqueda en minúsculas
-        self.treeview.delete(*self.treeview.get_children())
-        clientes = self.vencimiento_model.mostrar_vencimientos()
-        for cliente in clientes:
-            if search_term in cliente[0].lower() or search_term in cliente[1].lower() or search_term in cliente[2].lower() :
-                
-                self.treeview.insert('', 'end', values=cliente)
-                
+        """Lógica para buscar clientes."""
+        search_term = self.search_var.get().lower()
+        print(f"Buscar cliente: {search_term}")
+        
+
+ # ------------------------------ Cargar las tablas Siniestro------------------------------        
+    def actualizar_siniestro(self, siniestros):
+            """
+            Actualiza los siniestros en el Treeview.
+            :param siniestros: Lista de siniestros como tuplas.
+            """
+            self.treeview.delete(*self.treeview.get_children())  
+
+            for siniestro in siniestros:
+                # Inserta cada siniestro como una fila en el Treeview
+                self.treeview.insert('', 'end', values=(
+                    siniestro[0],
+                    siniestro[8],  # vehiculo_patente
+                    siniestro[9],  # vehiculo_nombre
+                    siniestro[10], #clietne nombre
+                    siniestro[11], #cliente apellido
+                    siniestro[12],  # cliente_dni
+                    siniestro[14],  # compania_nombre
+                    siniestro[2]   # siniestro_estado
+                ))
+
+    # ------------------------------ es para ver detalle Siniestro------------------------------
+    def seleccionar_siniestro(self, event):
+        """Método para capturar el siniestro seleccionado en el treeview."""
+        selected_item = self.treeview.selection()  
+        if selected_item:
+            siniestro_id = self.treeview.item(selected_item[0])["values"][0]  
+            self.selected_siniestro_id = siniestro_id  
+            print(f"Siniestro seleccionado con ID: {siniestro_id}")
+            
+
+    def ver_detalle_siniestro(self):
+        """Abre una ventana emergente para ver los detalles del siniestro seleccionado."""
+        if not self.selected_siniestro_id:
+            messagebox.showinfo("Error", "Debe seleccionar un siniestro.")
+            return
+        
+        # Llamamos al controlador para obtener los detalles del siniestro
+        siniestro = self.controller.obtener_detalle_siniestro(self.selected_siniestro_id)
+
+        if siniestro:
+            # Crear la vista de detalle con el siniestro seleccionado
+            DetalleSiniestroView(self.root, siniestro, self.volver_menu)
+        else:
+            messagebox.showinfo("Error", "No se encontró el siniestro con ID seleccionado.")
+            
+            
+            
+     # ------------------------------ Agregar siniestro------------------------------   
+    def agregar_siniestro (self):
+
+        self.controller.mostrar_agregar_siniestro(self.root, self.volver_menu)
+
+
+
+
+    def editar_siniestro(self):
+        """Permite editar el siniestro seleccionado."""
+        print("Editar siniestro seleccionado.")
+        # Lógica para editar un siniestro
+
+
+    def cambiar_estado_siniestro(self):
+        """Cambia el estado del siniestro seleccionado."""
+        print("Cambiar estado del siniestro.")
+        # Lógica para cambiar el estado y actualizar la tabla
+
+
+    def abrir_sitio_web(self, event):
+        """Abre el sitio web asociado al siniestro (doble clic en la tabla)."""
+        print("Abrir sitio web asociado al siniestro.")
+        # Lógica para abrir URL del sitio web
+
+
     def volver_menu(self):
         self.volver_menu()  
         self.main_frame.pack_forget()  
+        
+        
+if __name__ == "__main__":
+    root = ctk.CTk()
+    cliente_model = None  
+    
+    siniestro_view = SiniestrosView(root, cliente_model, None, None, None, None, lambda: print("Volviendo al menú principal"))
+    root.mainloop()

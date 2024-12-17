@@ -6,6 +6,7 @@ class UsuarioView:
         self.root = root
         self.usuario_model = usuario_model
         self.on_login_success = on_login_success
+        
         self.root.title("Iniciar Sesión")
         self.root.geometry("400x300")
         self.center_window()

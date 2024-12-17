@@ -125,7 +125,7 @@ class ClientesView:
                 for key, value in zip(keys, cliente):
                     ctk.CTkLabel(detail_window, text=f"{key}: {value}", fg_color='#2b2b2b', text_color='white').pack(pady=5)
             else:
-                messagebox.showerror("Error", "Cliente no encontrado.")
+                messagebox.showerror("Error", "No tiene Vehículo.")
         else:
             messagebox.showwarning("Advertencia", "Primero seleccione un cliente.")
     
@@ -141,8 +141,9 @@ class ClientesView:
 
         clientes = self.cliente_model.obtener_clientes()
         for cliente in clientes:
+            cliente_mayusculas = [str(valor).upper() for valor in cliente[:10]]
             estado = 'deshabilitado' if cliente[10] == 'inactivo' else 'habilitado'
-            self.tree.insert('', 'end', values=cliente[:10], tags=(estado,))
+            self.tree.insert('', 'end', values=cliente_mayusculas[:10], tags=(estado,))
 
 
     def centrar_ventana(self, ventana):
@@ -167,7 +168,7 @@ class ClientesView:
         if selected_item:
             client_id = self.tree.item(selected_item, 'values')[0]  
             cliente = self.cliente_model.obtener_cliente_por_id(client_id)
-
+            
             if cliente:
                 detail_window = Toplevel(self.root)
                 detail_window.title("Datos del Cliente")
@@ -178,7 +179,8 @@ class ClientesView:
 
                 keys = ['ID', 'NOMBRE', 'APELLIDO', 'DNI', 'EMAIL', 'TELÉFONO', 'FECHA DE NACIMIENTO', 'CODIGO POSTAL', 'DOMICILIO', 'VENCIMIENTO DE LICENCIA', ]
                 for key, value in zip(keys, cliente):
-                    ctk.CTkLabel(detail_window, text=f"{key}: {value}", fg_color='#2b2b2b', text_color='white').pack(pady=5)
+                    valor_mayuscula = str(value).upper()
+                    ctk.CTkLabel(detail_window, text=f"{key} : {valor_mayuscula}", fg_color='#2b2b2b', text_color='white').pack(pady=5)
 
                 # Botón para ver la foto del DNI
                 if cliente[10]: 

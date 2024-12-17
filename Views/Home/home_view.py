@@ -1,8 +1,8 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from tkinter import ttk, Toplevel
-from tkcalendar import DateEntry  # Asegúrate de tener instalado tkcalendar
-# from Views.Clientes.clientes_view import ClientesView
+from tkcalendar import DateEntry 
+from db.db_connection import DatabaseConnection
 
 class HomeView:
     def __init__(self, root, cliente_model, compania_model,vencimiento_model, siniestros_model , vehiculo_model ):
@@ -17,11 +17,8 @@ class HomeView:
         self.companias_view = None
         self.siniestros_view = None
         self.vencimientos_view = None
-        
-        # self.main_frame = ctk.CTkFrame(self.root)
-        # self.main_frame.pack(fill="both", expand=True)
 
-        self.root.geometry("900x600")
+        self.root.geometry("900x650")
         self.root.title("Sistema de Gestión de Clientes")
         self.root.config(bg='#2b2b2b')
 
@@ -29,9 +26,6 @@ class HomeView:
         self.main_frame = ctk.CTkFrame(self.root, fg_color='#2b2b2b')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        
-
-        # Título
         title = ctk.CTkLabel(self.main_frame, text="Menú principal", font=('Arial', 24), text_color='white')
         title.grid(row=0, column=0, columnspan=4, padx=20, pady=20)
 
@@ -50,19 +44,20 @@ class HomeView:
         btn_view = ctk.CTkButton(self.main_frame, text="Siniestros", command=self.mostrar_siniestros_view, fg_color='#3b3b3b', font=('Arial', 18))
         btn_view.grid(row=3, column=1, pady=30)
 
-        btn_edit = ctk.CTkButton(self.main_frame, text="Vencimientos", command=self.mostrar_vencimientos_view, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_edit.grid(row=4, column=1, pady=30)
-
-        btn_delete = ctk.CTkButton(self.main_frame, text="Cerrar sesión", command=self.cerrar_sesion, fg_color='#3b3b3b', font=('Arial', 18))
-        btn_delete.grid(row=5, column=1, pady=30)
-
-    # Función para abrir la vista de Cartera
-    # def mostrar_cliente_view(self):
-    #     # Oculta el contenido actual de HomeView usando pack_forget() en lugar de destroy()
-    #     self.main_frame.pack_forget()
-
-    #     # Asegúrate de pasar el modelo de cliente al instanciar ClienteView
-    #     self.cliente_view = ClienteView(self.root, self.cliente_model)  # Pasa el root y el modelo
+        btn_view = ctk.CTkButton(self.main_frame, text="Vencimientos", command=self.mostrar_vencimientos_view, fg_color='#3b3b3b', font=('Arial', 18))
+        btn_view.grid(row=4, column=1, pady=30)
+        
+        boton_backup = ctk.CTkButton(self.main_frame, text="BackUp", command=self.backup, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_backup.grid(row=5, column=1, pady=30)
+        
+        boton_logout = ctk.CTkButton(self.main_frame, text="Cerrar sesión", command=self.cerrar_sesion, fg_color='#3b3b3b', font=('Arial', 18))
+        boton_logout.grid(row=6, column=1, pady=30)
+        
+    def backup(self):
+        print("probando")
+        db_connection = DatabaseConnection()
+        #db_connection.connect()
+        db_connection.backup()
 
     def mostrar_clientes_view(self):
         from Views.Clientes.clientes_view import ClientesView
@@ -82,14 +77,10 @@ class HomeView:
         # Oculta el marco principal
         self.main_frame.pack_forget()
         
-        # Crea la vista de companias
-        #self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model, self.vencimiento_model, self.vehiculo_model, self.siniestros_model , self.volver_menu)
-        # Al reinstanciar la vista de compañías:
         self.companias_view = CompaniasView(self.root, self.cliente_model, self.compania_model,self.vencimiento_model, self.siniestros_model, self.vehiculo_model, self.volver_menu)
 
-
         # Muestra el marco de CompaniasView
-        self.companias_view.main_frame.pack(fill="both", expand=True)
+        self.companias_view.ventana.pack(fill="both", expand=True)
         
     def mostrar_vencimientos_view(self): 
         from Views.Vencimientos.vencimientos_view import VencimientosView
@@ -119,7 +110,7 @@ class HomeView:
         if self.clientes_view:
             self.clientes_view.main_frame.pack_forget()  # Ocultar vista de clientes
         if self.companias_view:
-            self.companias_view.main_frame.pack_forget()  # Ocultar vista de compañías
+            self.companias_view.ventana.pack_forget()  # Ocultar vista de compañías
         if self.siniestros_view:
             self.siniestros_view.main_frame.pack_forget()  # Ocultar vista de siniestros
         if self.vencimientos_view:
@@ -127,12 +118,6 @@ class HomeView:
 
         # Mostrar el menú principal de HomeView
         self.main_frame.pack(fill="both", expand=True)
-
-
-
-    
-    
-
 
     # Función para cerrar sesión
     def cerrar_sesion(self):
@@ -144,16 +129,6 @@ class HomeView:
 
     def open_edit_client_window(self):
         hola = 2
-        # selected_item = self.tree.selection()
-        # if selected_item:
-        #     client_id = self.tree.item(selected_item, 'values')[0]
-        #     self.client_form_window("Editar Cliente", client_id)
-        # else:
-        #     messagebox.showwarning("Advertencia", "Seleccione un cliente para editar.")
-
-    # def volver_menu(self):
-    #     # Regresar a la vista principal
-    #     self.main_frame.pack(fill="both", expand=True)  # Mostrar la vista principal
 
 # Código principal
 if __name__ == "__main__":

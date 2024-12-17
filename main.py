@@ -11,7 +11,7 @@ from Views.Login.login_view import UsuarioView
 from Views.Home.home_view import HomeView
 from Controller.LoginController import LoginController
 
-
+#hola
 import bcrypt
 #este es para crear un usuario inicial con usuario y contraseña hasheada
 """def insertar_usuario_inicial(db_connection):
@@ -68,24 +68,16 @@ def main():
         if db_connection.connection and db_connection.connection.is_connected():
             print("Conexión exitosa a la base de datos")
 
-            
             root = ctk.CTk()
 
-            
             usuario_model = UsuarioModelo(db_connection)
             
-           # insertar_usuario_inicial(db_connection)
-
-           
             login_controller = LoginController(usuario_model, None, on_login_success)
 
-         
             login_view = UsuarioView(root, login_controller,on_login_success)
 
-        
             login_controller.set_view(login_view)
-
-           
+            
             login_controller.set_view(login_view)
 
             root.mainloop()  
